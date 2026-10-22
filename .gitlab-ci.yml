@@ -1,0 +1,43 @@
+image: node:20
+
+stages:
+  - build
+  - deploy
+
+cache:
+  paths:
+    - node_modules/
+
+variables:
+  PUBLIC_URL: $CI_PAGES_URL
+
+# Build stage
+build:
+  stage: build
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - build/
+    expire_in: 1 hour
+  only:
+    - main
+    - master
+
+# Deploy to GitLab Pages
+pages:
+  stage: deploy
+  dependencies:
+    - build
+  script:
+    - echo "Deploying to GitLab Pages..."
+    - mkdir -p public
+    - cp -r build/* public/
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
+    - master
+
