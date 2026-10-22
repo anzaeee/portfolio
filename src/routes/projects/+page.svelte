@@ -1,259 +1,153 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-
-	const games = [
+	const projects = [
 		{
-			id: 'tictactoe',
-			title: 'Cosmic Tic-Tac-Toe',
-			description: 'Challenge the AI in this classic game with a stellar twist',
-			icon: '🎮'
+			icon: '🚀',
+			title: 'Star Shooter',
+			tag: 'Game',
+			description:
+				'The pixel-art space shooter on the home console. Blast asteroids for points, or shoot a planet to travel around the site.',
+			link: { href: '/?play', label: 'Play it' }
 		},
 		{
-			id: 'typing',
-			title: 'Speed Typing Challenge',
-			description: 'Test your typing speed with real-time feedback',
-			icon: '⌨️'
+			icon: '🪐',
+			title: 'This portfolio',
+			tag: 'Website',
+			description:
+				'Built with SvelteKit. The starfield, planets and sprites are drawn in code with noise and dithering, no image files.',
+			link: { href: 'https://github.com/anzaeee/portfolio', label: 'View source' }
 		},
 		{
-			id: 'ball-protector',
-			title: 'Ball Protector',
-			description: 'Protect the falling ball from hitting the ground!',
-			icon: '🎯'
+			icon: '🧪',
+			title: 'End-to-end testing framework',
+			tag: 'Work',
+			description: 'An end-to-end testing framework built on Playwright from the core, as QA Delivery Manager.'
 		},
 		{
-			id: 'hogwarts-runner',
-			title: 'Hogwarts Runner',
-			description: 'Jump over flying books in this magical endless runner',
-			icon: '🧙‍♂️'
+			icon: '🧠',
+			title: 'Final year project',
+			tag: 'University',
+			description: 'Natural language processing and digital image processing, for my BS in Computer Science at FAST-NUCES.'
 		}
 	];
 
-	function navigateToGame(gameId: string) {
-		goto(`/games/${gameId}`);
-	}
-
-	let isMobile = false;
-	function checkMobile() {
-		isMobile = window.innerWidth <= 768;
-	}
-
-	if (typeof window !== 'undefined') {
-		checkMobile();
-		window.addEventListener('resize', checkMobile);
-	}
+	const isExternal = (href: string) => href.startsWith('http');
 </script>
 
+<svelte:head>
+	<title>Projects | Shanzay Asad</title>
+</svelte:head>
+
 <div class="projects-page">
-	<div class="container">
-		<div class="page-header fade-in-up">
-			<h1>Projects & Games</h1>
-			<p>Interactive experiences and coding challenges</p>
-		</div>
+	<header>
+		<h1>Projects</h1>
+		<p>Things I've built, at work, at university and for fun.</p>
+	</header>
 
-		<div class="games-grid">
-			{#if isMobile}
-				{#each games.filter(g => g.id === 'tictactoe') as game}
-					<button 
-						class="game-card" 
-						on:click={() => navigateToGame(game.id)}
-						on:keydown={(e) => e.key === 'Enter' && navigateToGame(game.id)}
-					>
-						<div class="game-icon">{game.icon}</div>
-						<h2>{game.title}</h2>
-						<p>{game.description}</p>
-					</button>
-				{/each}
-			{:else}
-				{#each games as game}
-					<button 
-						class="game-card" 
-						on:click={() => navigateToGame(game.id)}
-						on:keydown={(e) => e.key === 'Enter' && navigateToGame(game.id)}
-					>
-						<div class="game-icon">{game.icon}</div>
-						<h2>{game.title}</h2>
-						<p>{game.description}</p>
-					</button>
-				{/each}
-			{/if}
-		</div>
-
-		<div class="coming-soon">
-			<div class="card">
-				<h3>More Projects Coming Soon</h3>
-				<p>Stay tuned for more interactive experiences, coding challenges, and creative projects!</p>
-				<div class="project-ideas">
-					<div class="idea-item">🧩 Algorithm Visualizer</div>
-					<div class="idea-item">🎨 Generative Art Gallery</div>
-					<div class="idea-item">📊 Data Visualization Playground</div>
+	<div class="grid">
+		{#each projects as project}
+			<article class="project">
+				<div class="top">
+					<span class="icon">{project.icon}</span>
+					<span class="tag">{project.tag}</span>
 				</div>
-			</div>
-		</div>
-	</div>
-	
-	<div class="floating-shapes">
-		{#each Array(6) as _, i}
-			<div class="shape shape-{i + 1}"></div>
+				<h2>{project.title}</h2>
+				<p>{project.description}</p>
+				{#if project.link}
+					<a
+						class="link"
+						href={project.link.href}
+						target={isExternal(project.link.href) ? '_blank' : undefined}
+						rel={isExternal(project.link.href) ? 'noopener noreferrer' : undefined}
+					>
+						{project.link.label} {isExternal(project.link.href) ? '↗' : '→'}
+					</a>
+				{/if}
+			</article>
 		{/each}
 	</div>
 </div>
 
 <style>
 	.projects-page {
-		position: relative;
-		min-height: 100vh;
-		padding: 2rem 0;
+		max-width: 1040px;
+		margin: 0 auto;
+		padding: 3rem 2rem;
 	}
 
-	.page-header {
-		text-align: center;
-		margin-bottom: 4rem;
+	header p {
+		margin-top: 1rem;
+		font-size: 1.05rem;
 	}
 
-	.page-header h1 {
-		font-size: 3rem;
-		margin-bottom: 1rem;
-	}
-
-	.page-header p {
-		font-size: 1.2rem;
-		color: var(--text-secondary);
-	}
-
-	.games-grid {
+	.grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-		gap: 2rem;
-		max-width: 1200px;
-		margin: 0 auto 4rem;
-		padding: 0 1rem;
+		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+		gap: 1.25rem;
+		margin-top: 2.5rem;
 	}
 
-	.game-card {
-		background: var(--secondary-bg);
-		border-radius: 1.5rem;
-		padding: 2rem;
-		border: 1px solid var(--border-color);
-		text-align: center;
-		cursor: pointer;
-		transition: all 0.3s ease;
+	.project {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		gap: 1rem;
-	}
-
-	.game-card:hover {
-		transform: translateY(-5px);
-		border-color: var(--accent-cyan);
-		box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-	}
-
-	.game-icon {
-		font-size: 3rem;
-		margin-bottom: 1rem;
-	}
-
-	.game-card h2 {
-		color: var(--accent-cyan);
-		font-size: 1.5rem;
-		margin-bottom: 0.5rem;
-	}
-
-	.game-card p {
-		color: var(--text-secondary);
-		font-size: 1rem;
-		line-height: 1.5;
-	}
-
-	.coming-soon {
-		opacity: 0;
-		animation: fadeInUp 0.6s ease-out 0.5s forwards;
-		max-width: 1000px;
-		margin: 0 auto;
-		padding: 0 1rem;
-	}
-
-	.card {
-		background: var(--secondary-bg);
-		border-radius: 1.5rem;
-		padding: 3rem;
+		padding: 1.6rem;
+		background: rgba(16, 16, 22, 0.88);
 		border: 1px solid var(--border-color);
-		text-align: center;
+		border-radius: 14px;
+		backdrop-filter: blur(6px);
+		transition: border-color 0.15s ease, transform 0.15s ease;
 	}
 
-	.project-ideas {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-		gap: 1rem;
-		margin-top: 1.5rem;
-	}
-
-	.idea-item {
-		background: var(--primary-bg);
-		padding: 1rem;
-		border-radius: 0.5rem;
-		text-align: center;
-		color: var(--accent-cyan);
-		font-weight: 500;
-		border: 1px solid var(--border-color);
-		transition: all 0.3s ease;
-	}
-
-	.idea-item:hover {
-		border-color: var(--accent-cyan);
+	.project:hover {
+		border-color: var(--accent-purple);
 		transform: translateY(-2px);
 	}
 
-	.floating-shapes {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		pointer-events: none;
-		z-index: -1;
+	.top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 1rem;
 	}
 
-	.shape {
-		position: absolute;
-		border-radius: 50%;
-		background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-		opacity: 0.1;
-		animation: float 6s ease-in-out infinite;
+	.icon {
+		font-size: 1.8rem;
 	}
 
-	.shape-1 { width: 80px; height: 80px; top: 20%; left: 10%; animation-delay: 0s; }
-	.shape-2 { width: 120px; height: 120px; top: 60%; right: 15%; animation-delay: 1s; }
-	.shape-3 { width: 60px; height: 60px; top: 80%; left: 20%; animation-delay: 2s; }
-	.shape-4 { width: 100px; height: 100px; top: 30%; right: 30%; animation-delay: 3s; }
-	.shape-5 { width: 70px; height: 70px; top: 10%; right: 10%; animation-delay: 4s; }
-	.shape-6 { width: 90px; height: 90px; bottom: 20%; left: 50%; animation-delay: 5s; }
-
-	@keyframes float {
-		0%, 100% { transform: translateY(0) rotate(0deg); }
-		50% { transform: translateY(-20px) rotate(180deg); }
+	.tag {
+		padding: 0.2rem 0.6rem;
+		border: 1px solid #2f2a55;
+		border-radius: 999px;
+		background: #17142b;
+		font-family: var(--pixel);
+		font-size: 0.7rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--accent-cyan);
 	}
 
-	@media (max-width: 768px) {
-		.games-grid {
-			grid-template-columns: 1fr;
-			padding: 0 2rem;
+	.project h2 {
+		margin-bottom: 0.6rem;
+		font-size: 1.4rem;
+	}
+
+	.project p {
+		flex: 1;
+		margin: 0;
+		font-size: 0.95rem;
+		line-height: 1.65;
+	}
+
+	.link {
+		margin-top: 1.25rem;
+		font-weight: 500;
+	}
+
+	@media (max-width: 600px) {
+		.projects-page {
+			padding: 1.5rem 1rem 2rem;
 		}
 
-		.game-card {
-			padding: 1.5rem;
-		}
-
-		.coming-soon {
-			padding: 0 2rem;
-		}
-
-		.card {
-			padding: 2rem;
-		}
-
-		.project-ideas {
+		.grid {
 			grid-template-columns: 1fr;
 		}
 	}

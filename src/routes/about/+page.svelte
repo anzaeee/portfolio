@@ -1,332 +1,272 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import contactData from '$lib/contact-data.json';
+	import { educationJourney, skillGroups } from '$lib/profile';
+	import PixelSprite from '$lib/components/space/PixelSprite.svelte';
+	import { rocket } from '$lib/components/space/sprites';
 
-	let skillsVisible = false;
-	let timelineVisible = false;
-	let factsVisible = false;
+	const info = contactData.personalInfo;
 
-	const skills = [
-		{ name: 'JavaScript', level: 95, category: 'frontend' },
-		{ name: 'TypeScript', level: 90, category: 'frontend' },
-		{ name: 'React', level: 88, category: 'frontend' },
-		{ name: 'Svelte', level: 85, category: 'frontend' },
-		{ name: 'Vue.js', level: 82, category: 'frontend' },
-		{ name: 'Node.js', level: 90, category: 'backend' },
-		{ name: 'Python', level: 85, category: 'backend' },
-		{ name: 'PostgreSQL', level: 80, category: 'database' },
-		{ name: 'MongoDB', level: 78, category: 'database' },
-		{ name: 'AWS', level: 83, category: 'cloud' },
-		{ name: 'Docker', level: 85, category: 'devops' },
-		{ name: 'GraphQL', level: 75, category: 'api' }
+	const facts = [
+		{ icon: '✍️', title: 'Published writer', text: 'My fiction on AO3 has passed 100,000 hits and kudos.' },
+		{ icon: '🎤', title: 'Debater', text: 'Three honorable mentions in school debate.' },
+		{ icon: '🏆', title: 'GDSC Tech Idea', text: 'Top 10 finalist, finished in the top 5.' },
+		{ icon: '🔀', title: 'Changed course', text: 'Started on a pre-medical track before switching to engineering.' },
+		{ icon: '🐝', title: 'Spelling Bee', text: 'Competed back in my O Level days.' }
 	];
-
-	const timeline = [
-		{
-			year: '2024',
-			title: 'Senior Full Stack Developer',
-			company: 'TechCorp Inc.',
-			description: 'Leading development of microservices architecture, mentoring junior developers, and implementing cutting-edge solutions.',
-			technologies: ['React', 'Node.js', 'AWS', 'TypeScript']
-		},
-		{
-			year: '2022',
-			title: 'Full Stack Developer',
-			company: 'InnovateLab',
-			description: 'Built scalable web applications, optimized performance, and collaborated with cross-functional teams.',
-			technologies: ['Vue.js', 'Python', 'PostgreSQL', 'Docker']
-		},
-		{
-			year: '2020',
-			title: 'Frontend Developer',
-			company: 'StartupXYZ',
-			description: 'Created responsive user interfaces, implemented modern design patterns, and improved user experience.',
-			technologies: ['React', 'JavaScript', 'CSS3', 'REST APIs']
-		},
-		{
-			year: '2018',
-			title: 'Junior Developer',
-			company: 'WebSolutions',
-			description: 'Started my journey in web development, learned best practices, and contributed to various projects.',
-			technologies: ['HTML5', 'CSS3', 'JavaScript', 'jQuery']
-		}
-	];
-
-	const funFacts = [
-		{ icon: '☕', text: 'I consume approximately 1,095 cups of coffee per year' },
-		{ icon: '🌙', text: 'I do my best coding between 10 PM and 2 AM' },
-		{ icon: '🎮', text: 'I built my first game in BASIC when I was 12' },
-		{ icon: '🚀', text: 'I follow SpaceX launches religiously' },
-		{ icon: '📚', text: 'I read at least 20 tech books every year' },
-		{ icon: '🎵', text: 'I code to lo-fi hip hop and synthwave' },
-		{ icon: '🧩', text: 'I solve Rubik\'s cubes to clear my mind' },
-		{ icon: '🌱', text: 'I maintain a small garden of succulents on my desk' }
-	];
-
-	onMount(() => {
-		const observer = new IntersectionObserver((entries) => {
-			entries.forEach(entry => {
-				if (entry.isIntersecting) {
-					if (entry.target.classList.contains('skills-section')) {
-						skillsVisible = true;
-					}
-					if (entry.target.classList.contains('timeline-section')) {
-						timelineVisible = true;
-					}
-					if (entry.target.classList.contains('facts-section')) {
-						factsVisible = true;
-					}
-				}
-			});
-		}, { threshold: 0.3 });
-
-		const skillsSection = document.querySelector('.skills-section');
-		const timelineSection = document.querySelector('.timeline-section');
-		const factsSection = document.querySelector('.facts-section');
-
-		if (skillsSection) observer.observe(skillsSection);
-		if (timelineSection) observer.observe(timelineSection);
-		if (factsSection) observer.observe(factsSection);
-
-		return () => observer.disconnect();
-	});
-
-	function getSkillColor(category: string): string {
-		const colors = {
-			frontend: 'var(--accent-cyan)',
-			backend: 'var(--accent-purple)',
-			database: '#10b981',
-			cloud: '#f59e0b',
-			devops: '#ef4444',
-			api: '#8b5cf6'
-		};
-		return colors[category] || 'var(--accent-cyan)';
-	}
 </script>
 
+<svelte:head>
+	<title>About | Shanzay Asad</title>
+</svelte:head>
+
 <div class="about-page">
-	<div class="container">
-		<div class="hero-section fade-in-up">
-			<div class="hero-content">
-				<h1>About Me</h1>
-				<p class="hero-subtitle">Developer, Problem Solver, Coffee Enthusiast</p>
-				<div class="hero-description">
-					<p>
-						I'm a passionate full-stack developer with a love for creating elegant solutions to complex problems. 
-						With over 5 years of experience in the industry, I've had the privilege of working on diverse projects 
-						ranging from startup MVPs to enterprise-scale applications.
-					</p>
-					<p>
-						My journey in technology is driven by curiosity and a desire to build things that matter. 
-						I believe in writing clean, maintainable code and creating user experiences that delight and empower.
-					</p>
+	<section class="hero">
+		<div class="hero-text">
+			<h1>About Me</h1>
+			<p class="role">{info.profession} · {info.company}</p>
+			<p>
+				I lead QA delivery at {info.company}, where we're building Voice AI solutions meant to scale.
+			</p>
+			<p>
+				I studied computer science at FAST-NUCES and have worked across operations, engineering and
+				product: automating workflows and hiring at Foretheta, and advocating for accessible design at AIO.
+				I built an end-to-end testing framework on Playwright from the core, and I've mentored 5+ interns in
+				product management, Figma and rapid prototyping.
+			</p>
+			<p>Outside of work I write. My fiction on AO3 has passed 100,000 hits.</p>
+		</div>
+		<div class="avatar" aria-hidden="true">
+			<PixelSprite {...rocket} pixel={8} />
+		</div>
+	</section>
+
+	<section>
+		<h2>Skills</h2>
+		<div class="skills">
+			{#each skillGroups as group}
+				<div class="skill-group">
+					<h3>{group.category}</h3>
+					<ul>
+						{#each group.skills as skill}
+							<li>{skill}</li>
+						{/each}
+					</ul>
 				</div>
-			</div>
-			<div class="hero-image">
-				<div class="profile-avatar">
-					<div class="avatar-circle">
-						<span class="avatar-emoji">👨‍💻</span>
+			{/each}
+		</div>
+	</section>
+
+	<section>
+		<h2>Journey</h2>
+		<ol class="timeline">
+			{#each [...educationJourney].reverse() as stage}
+				<li>
+					<span class="period">{stage.period}</span>
+					<div class="stage">
+						<h3>{stage.icon} {stage.title}</h3>
+						<p class="institution">{stage.institution}</p>
+						<p>{stage.achievements[0]}</p>
 					</div>
-					<div class="avatar-glow"></div>
+				</li>
+			{/each}
+		</ol>
+		<a class="more" href="/resume">See the full journey →</a>
+	</section>
+
+	<section>
+		<h2>Beyond work</h2>
+		<div class="facts">
+			{#each facts as fact}
+				<div class="fact">
+					<span class="fact-icon">{fact.icon}</span>
+					<h3>{fact.title}</h3>
+					<p>{fact.text}</p>
 				</div>
-			</div>
+			{/each}
 		</div>
+	</section>
 
-		<div class="skills-section" class:visible={skillsVisible}>
-			<h2>Technical Arsenal</h2>
-			<p class="section-subtitle">Technologies I work with daily</p>
-			
-			<div class="skills-grid">
-				{#each skills as skill, index}
-					<div 
-						class="skill-item" 
-						style="animation-delay: {index * 0.1}s"
-						class:visible={skillsVisible}
-					>
-						<div class="skill-header">
-							<span class="skill-name">{skill.name}</span>
-							<span class="skill-level">{skill.level}%</span>
-						</div>
-						<div class="skill-bar">
-							<div 
-								class="skill-progress" 
-								style="width: {skillsVisible ? skill.level : 0}%; background-color: {getSkillColor(skill.category)}"
-							></div>
-						</div>
-						<div class="skill-category">{skill.category}</div>
-					</div>
-				{/each}
-			</div>
+	<section class="cta">
+		<h2>Let's talk</h2>
+		<p>Happy to chat about QA, Voice AI, roles or side projects.</p>
+		<div class="cta-buttons">
+			<a href="/contact" class="btn">Get in touch</a>
+			<a href="/resume" class="btn btn-outline">View resume</a>
 		</div>
-
-		<div class="timeline-section" class:visible={timelineVisible}>
-			<h2>Professional Journey</h2>
-			<p class="section-subtitle">My path through the tech world</p>
-			
-			<div class="timeline">
-				{#each timeline as item, index}
-					<div 
-						class="timeline-item" 
-						class:visible={timelineVisible}
-						style="animation-delay: {index * 0.2}s"
-					>
-						<div class="timeline-marker">
-							<div class="timeline-year">{item.year}</div>
-						</div>
-						<div class="timeline-content">
-							<h3 class="timeline-title">{item.title}</h3>
-							<div class="timeline-company">{item.company}</div>
-							<p class="timeline-description">{item.description}</p>
-							<div class="timeline-technologies">
-								{#each item.technologies as tech}
-									<span class="tech-tag">{tech}</span>
-								{/each}
-							</div>
-						</div>
-					</div>
-				{/each}
-			</div>
-		</div>
-
-		<div class="facts-section" class:visible={factsVisible}>
-			<h2>Fun Facts & Quirks</h2>
-			<p class="section-subtitle">Things that make me, me</p>
-			
-			<div class="facts-grid">
-				{#each funFacts as fact, index}
-					<div 
-						class="fact-item" 
-						class:visible={factsVisible}
-						style="animation-delay: {index * 0.1}s"
-					>
-						<div class="fact-icon">{fact.icon}</div>
-						<p class="fact-text">{fact.text}</p>
-					</div>
-				{/each}
-			</div>
-		</div>
-
-		<div class="philosophy-section">
-			<div class="card">
-				<h2>My Development Philosophy</h2>
-				<div class="philosophy-grid">
-					<div class="philosophy-item">
-						<h3>🎯 User-Centered</h3>
-						<p>Every line of code should serve the end user. I prioritize creating intuitive, accessible experiences that solve real problems.</p>
-					</div>
-					<div class="philosophy-item">
-						<h3>🔧 Clean & Maintainable</h3>
-						<p>I believe in writing code that future-me (and my teammates) will thank me for. Clear, well-documented, and testable.</p>
-					</div>
-					<div class="philosophy-item">
-						<h3>🚀 Continuous Learning</h3>
-						<p>Technology evolves rapidly. I stay curious, experiment with new tools, and never stop learning from the community.</p>
-					</div>
-					<div class="philosophy-item">
-						<h3>🤝 Collaborative</h3>
-						<p>The best solutions come from diverse minds working together. I value communication, feedback, and shared ownership.</p>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="cta-section">
-			<div class="cta-content">
-				<h2>Let's Build Something Amazing</h2>
-				<p>I'm always excited to work on new projects and connect with fellow developers. Whether you have an idea, need help with a project, or just want to chat about technology, I'd love to hear from you.</p>
-				<div class="cta-buttons">
-					<a href="/contact" class="btn">Get In Touch</a>
-					<a href="/projects" class="btn btn-outline">View My Work</a>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Background elements -->
-	<div class="floating-icons">
-		<div class="icon-particle icon-1">💻</div>
-		<div class="icon-particle icon-2">⚡</div>
-		<div class="icon-particle icon-3">🚀</div>
-		<div class="icon-particle icon-4">✨</div>
-		<div class="icon-particle icon-5">🎯</div>
-		<div class="icon-particle icon-6">🔥</div>
-	</div>
+	</section>
 </div>
 
 <style>
 	.about-page {
-		position: relative;
-		padding: 2rem 0;
+		display: flex;
+		flex-direction: column;
+		gap: 4.5rem;
+		max-width: 1040px;
+		margin: 0 auto;
+		padding: 2.5rem 2rem 3rem;
 	}
 
-	.hero-section {
-		display: grid;
-		grid-template-columns: 2fr 1fr;
-		gap: 4rem;
-		align-items: center;
-		margin-bottom: 6rem;
-		min-height: 70vh;
-	}
-
-	.hero-content h1 {
-		font-size: 3.5rem;
-		margin-bottom: 1rem;
-	}
-
-	.hero-subtitle {
-		font-size: 1.5rem;
-		color: var(--accent-cyan);
-		margin-bottom: 2rem;
-		font-weight: 500;
-	}
-
-	.hero-description {
-		font-size: 1.1rem;
-		line-height: 1.8;
-		color: var(--text-secondary);
-	}
-
-	.hero-description p {
+	section h2 {
 		margin-bottom: 1.5rem;
 	}
 
-	.hero-image {
-		display: flex;
-		justify-content: center;
+	.hero {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
 		align-items: center;
+		gap: 3rem;
 	}
 
-	.profile-avatar {
-		position: relative;
+	.hero-text p {
+		max-width: 640px;
+		font-size: 1.05rem;
+		line-height: 1.75;
 	}
 
-	.avatar-circle {
-		width: 200px;
-		height: 200px;
+	.hero-text .role {
+		margin: -0.25rem 0 1.5rem;
+		font-family: var(--pixel);
+		font-size: 0.9rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--accent-cyan);
+	}
+
+	.avatar {
+		display: grid;
+		place-items: center;
+		width: 220px;
+		height: 220px;
 		border-radius: 50%;
-		background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		position: relative;
-		z-index: 2;
+		background: radial-gradient(circle at 35% 30%, #3423a8, #120c3a 70%);
+		box-shadow: 0 0 0 8px rgba(114, 98, 255, 0.15), 0 0 60px rgba(114, 98, 255, 0.35);
 		animation: float 3s ease-in-out infinite;
 	}
 
-	.avatar-emoji {
-		font-size: 5rem;
+	.skills {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		gap: 1rem;
 	}
 
-	.avatar-glow {
-		position: absolute;
-		top: -20px;
-		left: -20px;
-		right: -20px;
-		bottom: -20px;
-		border-radius: 50%;
-		background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-		opacity: 0.3;
-		animation: pulse 2s ease-in-out infinite;
-		z-index: 1;
+	.skill-group,
+	.fact,
+	.stage {
+		padding: 1.25rem 1.4rem;
+		background: rgba(16, 16, 22, 0.88);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		backdrop-filter: blur(6px);
+	}
+
+	.skill-group h3 {
+		margin-bottom: 0.9rem;
+		font-family: var(--pixel);
+		font-size: 0.8rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.skill-group ul {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		list-style: none;
+	}
+
+	.skill-group li {
+		padding: 0.3rem 0.75rem;
+		border: 1px solid #2f2a55;
+		border-radius: 999px;
+		background: #17142b;
+		font-size: 0.88rem;
+		color: var(--text-primary);
+	}
+
+	.timeline {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		list-style: none;
+		border-left: 2px dashed #3423a8;
+		padding-left: 1.5rem;
+	}
+
+	.timeline li {
+		display: grid;
+		grid-template-columns: 120px minmax(0, 1fr);
+		gap: 1.25rem;
+		align-items: start;
+	}
+
+	.period {
+		padding-top: 1.3rem;
+		font-family: var(--pixel);
+		font-size: 0.8rem;
+		color: var(--accent-cyan);
+	}
+
+	.stage h3 {
+		margin-bottom: 0.2rem;
+		font-size: 1.1rem;
+		color: #fff;
+	}
+
+	.stage p {
+		margin: 0;
+		font-size: 0.95rem;
+	}
+
+	.stage .institution {
+		margin-bottom: 0.5rem;
+		color: var(--accent-cyan);
+	}
+
+	.more {
+		display: inline-block;
+		margin-top: 1.25rem;
+		font-weight: 500;
+	}
+
+	.facts {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+		gap: 1rem;
+	}
+
+	.fact-icon {
+		font-size: 1.6rem;
+	}
+
+	.fact h3 {
+		margin: 0.6rem 0 0.3rem;
+		font-size: 1rem;
+		color: #fff;
+	}
+
+	.fact p {
+		margin: 0;
+		font-size: 0.9rem;
+	}
+
+	.cta {
+		padding: 2.5rem;
+		text-align: center;
+		background: rgba(16, 16, 22, 0.88);
+		border: 1px solid var(--border-color);
+		border-radius: 16px;
+	}
+
+	.cta h2 {
+		margin-bottom: 0.75rem;
+	}
+
+	.cta-buttons {
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin-top: 1.25rem;
 	}
 
 	@keyframes float {
@@ -334,368 +274,45 @@
 		50% { transform: translateY(-10px); }
 	}
 
-	.skills-section, .timeline-section, .facts-section {
-		margin-bottom: 6rem;
-		text-align: center;
-	}
+	@media (max-width: 760px) {
+		.about-page {
+			gap: 3.5rem;
+			padding: 1.5rem 1rem 2rem;
+		}
 
-	.skills-section h2, .timeline-section h2, .facts-section h2 {
-		font-size: 2.5rem;
-		margin-bottom: 1rem;
-		color: var(--accent-cyan);
-	}
-
-	.section-subtitle {
-		font-size: 1.2rem;
-		color: var(--text-secondary);
-		margin-bottom: 3rem;
-	}
-
-	.skills-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-		gap: 2rem;
-		margin-top: 3rem;
-	}
-
-	.skill-item {
-		background: var(--secondary-bg);
-		padding: 2rem;
-		border-radius: 1rem;
-		border: 1px solid var(--border-color);
-		opacity: 0;
-		transform: translateY(30px);
-		transition: all 0.6s ease;
-	}
-
-	.skill-item.visible {
-		opacity: 1;
-		transform: translateY(0);
-	}
-
-	.skill-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 1rem;
-	}
-
-	.skill-name {
-		font-weight: 600;
-		color: var(--text-primary);
-		font-size: 1.1rem;
-	}
-
-	.skill-level {
-		color: var(--accent-purple);
-		font-weight: 700;
-	}
-
-	.skill-bar {
-		height: 8px;
-		background: var(--primary-bg);
-		border-radius: 4px;
-		overflow: hidden;
-		margin-bottom: 0.5rem;
-	}
-
-	.skill-progress {
-		height: 100%;
-		transition: width 1.5s ease-in-out;
-		border-radius: 4px;
-	}
-
-	.skill-category {
-		color: var(--text-muted);
-		font-size: 0.9rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-	}
-
-	.timeline {
-		max-width: 800px;
-		margin: 0 auto;
-		position: relative;
-	}
-
-	.timeline::before {
-		content: '';
-		position: absolute;
-		left: 50%;
-		top: 0;
-		bottom: 0;
-		width: 2px;
-		background: linear-gradient(to bottom, var(--accent-cyan), var(--accent-purple));
-		transform: translateX(-50%);
-	}
-
-	.timeline-item {
-		display: flex;
-		align-items: center;
-		margin-bottom: 3rem;
-		opacity: 0;
-		transform: translateX(-50px);
-		transition: all 0.6s ease;
-	}
-
-	.timeline-item.visible {
-		opacity: 1;
-		transform: translateX(0);
-	}
-
-	.timeline-item:nth-child(even) {
-		flex-direction: row-reverse;
-		transform: translateX(50px);
-	}
-
-	.timeline-item:nth-child(even).visible {
-		transform: translateX(0);
-	}
-
-	.timeline-marker {
-		position: relative;
-		z-index: 2;
-		margin: 0 2rem;
-	}
-
-	.timeline-year {
-		background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-		color: var(--primary-bg);
-		padding: 1rem 1.5rem;
-		border-radius: 2rem;
-		font-weight: 700;
-		font-size: 0.9rem;
-		white-space: nowrap;
-	}
-
-	.timeline-content {
-		background: var(--secondary-bg);
-		padding: 2rem;
-		border-radius: 1rem;
-		border: 1px solid var(--border-color);
-		flex: 1;
-		text-align: left;
-		max-width: 350px;
-	}
-
-	.timeline-title {
-		color: var(--accent-cyan);
-		margin-bottom: 0.5rem;
-		font-size: 1.3rem;
-	}
-
-	.timeline-company {
-		color: var(--accent-purple);
-		font-weight: 600;
-		margin-bottom: 1rem;
-	}
-
-	.timeline-description {
-		color: var(--text-secondary);
-		line-height: 1.6;
-		margin-bottom: 1.5rem;
-	}
-
-	.timeline-technologies {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-	}
-
-	.tech-tag {
-		background: var(--primary-bg);
-		color: var(--accent-cyan);
-		padding: 0.25rem 0.75rem;
-		border-radius: 1rem;
-		font-size: 0.8rem;
-		border: 1px solid var(--border-color);
-	}
-
-	.facts-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-		gap: 2rem;
-		margin-top: 3rem;
-	}
-
-	.fact-item {
-		background: var(--secondary-bg);
-		padding: 2rem;
-		border-radius: 1rem;
-		border: 1px solid var(--border-color);
-		text-align: center;
-		opacity: 0;
-		transform: scale(0.9);
-		transition: all 0.5s ease;
-	}
-
-	.fact-item.visible {
-		opacity: 1;
-		transform: scale(1);
-	}
-
-	.fact-item:hover {
-		transform: scale(1.05);
-		border-color: var(--accent-cyan);
-		box-shadow: 0 10px 25px rgba(0, 255, 255, 0.2);
-	}
-
-	.fact-icon {
-		font-size: 3rem;
-		margin-bottom: 1rem;
-	}
-
-	.fact-text {
-		color: var(--text-secondary);
-		line-height: 1.6;
-	}
-
-	.philosophy-section {
-		margin-bottom: 6rem;
-	}
-
-	.philosophy-section h2 {
-		text-align: center;
-		color: var(--accent-purple);
-		margin-bottom: 3rem;
-	}
-
-	.philosophy-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-		gap: 2rem;
-		margin-top: 2rem;
-	}
-
-	.philosophy-item {
-		text-align: center;
-		padding: 1.5rem;
-	}
-
-	.philosophy-item h3 {
-		color: var(--accent-cyan);
-		margin-bottom: 1rem;
-		font-size: 1.2rem;
-	}
-
-	.philosophy-item p {
-		color: var(--text-secondary);
-		line-height: 1.6;
-	}
-
-	.cta-section {
-		text-align: center;
-		background: var(--secondary-bg);
-		border-radius: 1.5rem;
-		padding: 4rem 2rem;
-		border: 1px solid var(--border-color);
-	}
-
-	.cta-content h2 {
-		color: var(--accent-cyan);
-		margin-bottom: 1.5rem;
-		font-size: 2.5rem;
-	}
-
-	.cta-content p {
-		font-size: 1.1rem;
-		color: var(--text-secondary);
-		line-height: 1.8;
-		margin-bottom: 2rem;
-		max-width: 600px;
-		margin-left: auto;
-		margin-right: auto;
-	}
-
-	.cta-buttons {
-		display: flex;
-		justify-content: center;
-		gap: 1.5rem;
-		flex-wrap: wrap;
-	}
-
-	/* Floating background icons */
-	.floating-icons {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		pointer-events: none;
-		z-index: -1;
-	}
-
-	.icon-particle {
-		position: absolute;
-		font-size: 2rem;
-		opacity: 0.1;
-		animation: icon-float 8s ease-in-out infinite;
-	}
-
-	.icon-1 { top: 10%; left: 10%; animation-delay: 0s; }
-	.icon-2 { top: 20%; right: 15%; animation-delay: 2s; }
-	.icon-3 { top: 60%; left: 5%; animation-delay: 4s; }
-	.icon-4 { top: 80%; right: 20%; animation-delay: 6s; }
-	.icon-5 { top: 40%; right: 10%; animation-delay: 8s; }
-	.icon-6 { bottom: 20%; left: 20%; animation-delay: 10s; }
-
-	@keyframes icon-float {
-		0%, 100% { transform: translateY(0) rotate(0deg); }
-		50% { transform: translateY(-30px) rotate(180deg); }
-	}
-
-	@media (max-width: 768px) {
-		.hero-section {
+		.hero {
 			grid-template-columns: 1fr;
-			text-align: center;
 			gap: 2rem;
 		}
 
-		.hero-content h1 {
-			font-size: 2.5rem;
-		}
-
-		.avatar-circle {
+		.avatar {
+			order: -1;
 			width: 150px;
 			height: 150px;
 		}
 
-		.avatar-emoji {
-			font-size: 4rem;
+		.avatar :global(svg) {
+			width: 70px;
+			height: auto;
 		}
 
-		.skills-grid {
+		.timeline li {
 			grid-template-columns: 1fr;
+			gap: 0.4rem;
 		}
 
-		.timeline::before {
-			left: 20px;
+		.period {
+			padding-top: 0;
 		}
 
-		.timeline-item {
-			flex-direction: row !important;
-			transform: translateX(0) !important;
+		.cta {
+			padding: 1.75rem 1.25rem;
 		}
+	}
 
-		.timeline-marker {
-			margin: 0 1rem 0 0;
-		}
-
-		.timeline-content {
-			max-width: none;
-		}
-
-		.facts-grid {
-			grid-template-columns: 1fr;
-		}
-
-		.philosophy-grid {
-			grid-template-columns: 1fr;
-		}
-
-		.cta-buttons {
-			flex-direction: column;
-			align-items: center;
+	@media (prefers-reduced-motion: reduce) {
+		.avatar {
+			animation: none;
 		}
 	}
 </style>

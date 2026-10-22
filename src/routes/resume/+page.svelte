@@ -1,84 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { educationJourney } from '$lib/profile';
+	import contactData from '$lib/contact-data.json';
 
-	interface EducationStage {
-		id: string;
-		title: string;
-		period: string;
-		institution: string;
-		description: string;
-		achievements: string[];
-		icon: string;
-		color: string;
-	}
+	// Career started in 2022 (Foretheta)
+	const yearsInIndustry = new Date().getFullYear() - 2022;
 
 	let currentStage = 0;
 	let stagesVisible = false;
 	let journeyStarted = false;
-
-	const educationJourney: EducationStage[] = [
-		{
-			id: 'middle',
-			title: 'O Levels',
-			period: '2012 - 2016',
-			institution: 'Roots School System',
-			description: 'The beginning of she',
-			achievements: [
-				'3x Honorable mention debator.',
-				'Learned basic HTML but never worked on it',
-				'Spelling Bee participant',
-				'Pre-medical track'
-			],
-			icon: '🎒',
-			color: '#8b5cf6'
-		},
-		{
-			id: 'high',
-			title: 'A Levels',
-			period: '2016 - 2019',
-			institution: 'Edwardes College Peshawar',
-			description: 'The next chapter',
-			achievements: [
-				'Due to medical emergency, took a gap year and realigned my goals',
-				'Published writer on AO3 and secured 100,000+ hits and kudos',
-				'Pre-engineering track with extras in Urdu and Economics',
-			],
-			icon: '🎓',
-			color: '#f59e0b'
-		},
-		{
-			id: 'college',
-			title: 'University',
-			period: '2019 - 2023',
-			institution: 'National University of Computer and Emerging Sciences',
-			description: 'Comprehensive computer science education with focus on software engineering.',
-			achievements: [
-				'Bachelor of Science in Computer Science',
-				'DevOps, Knowledge Graphs and Distributed Engineering electives - Scalable development',
-				'Top 10 finalist for GDSC Tech Idea competition, finished Top 5',
-				'Final Year Project in Natural Language Processing & Digital Image Processing'
-			],
-			icon: '🏛️',
-			color: '#ef4444'
-		},
-		{
-			id: 'career',
-			title: 'Professional Career',
-			period: '2022 - Present',
-			institution: 'Tech Industry',
-			description: 'Applying knowledge to solve real-world problems and mentor others.',
-			achievements: [
-				'Administrative Assistant at Foretheta automating workflows and hiring super engineers',
-				'Software Engineer internship, learning heads-on development and delegation',
-				'Advocated accessibility practices in design for end user at startup AIO for inclusive UI/UX',
-				'Mentored 5+ junior interns across Product Management, Figma and rapid prototpying',
-				'10x QA Delivery Manager - Pioneered an end-to-end testing framework with Playwright from the core',
-				'Currently leading the charge at Thinkrr.ai to build Voice AI solutions meant to scale'
-			],
-			icon: '🚀',
-			color: '#00ffff'
-		}
-	];
 
 	function startJourney() {
 		journeyStarted = true;
@@ -231,31 +161,31 @@
 		<!-- Download CTA -->
 		<div class="download-section">
 			<div class="download-card">
-				<h2>📄 Complete Professional Resume</h2>
+				<h2>📄 Want the full picture?</h2>
 				<p>
-					Want the traditional format? Download my comprehensive resume with detailed work experience, 
-					technical skills, projects, and certifications.
+					My complete work history and recommendations live on LinkedIn. Or get in touch and
+					I'll send my resume over.
 				</p>
 				<div class="download-buttons">
-					<button class="btn download-btn">
-						📥 Download PDF Resume
-					</button>
-					<button class="btn btn-outline">
-						📧 Email Resume to You
-					</button>
+					<a class="btn download-btn" href={contactData.socialLinks.linkedin} target="_blank" rel="noopener noreferrer">
+						💼 View on LinkedIn
+					</a>
+					<a class="btn btn-outline" href="/contact">
+						📧 Get in touch
+					</a>
 				</div>
 				<div class="resume-stats">
 					<div class="resume-stat">
-						<span class="stat-number">2+</span>
-						<span class="stat-label">Years Experience</span>
-					</div>
-					<div class="resume-stat">
-						<span class="stat-number">7+</span>
-						<span class="stat-label">Technologies</span>
+						<span class="stat-number">{yearsInIndustry}</span>
+						<span class="stat-label">Years in industry</span>
 					</div>
 					<div class="resume-stat">
 						<span class="stat-number">5+</span>
-						<span class="stat-label">Major Projects</span>
+						<span class="stat-label">Interns mentored</span>
+					</div>
+					<div class="resume-stat">
+						<span class="stat-number">100k+</span>
+						<span class="stat-label">AO3 hits</span>
 					</div>
 				</div>
 			</div>
@@ -382,7 +312,7 @@
 
 	.stage-dot:hover {
 		transform: scale(1.1);
-		box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+		box-shadow: 0 5px 15px rgba(114, 98, 255, 0.3);
 	}
 
 	.stage-dot.active {
@@ -650,7 +580,7 @@
 	.info-card:hover {
 		transform: translateY(-4px);
 		border-color: var(--accent-cyan);
-		box-shadow: 0 10px 25px rgba(0, 255, 255, 0.1);
+		box-shadow: 0 10px 25px rgba(114, 98, 255, 0.1);
 	}
 
 	.info-card h3 {
