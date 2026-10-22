@@ -2,103 +2,14 @@
   "personalInfo": {
     "name": "Shanzay Asad",
     "email": "shanzayyasad@gmail.com",
-    "phone": "(555) 123-4567",
     "location": "Islamabad, Pakistan",
     "profession": "QA Delivery Manager",
     "company": "Thinkrr.ai",
     "linkedin": "linkedin.com/in/anzay",
-    "github": "github.com/anzaeee",
-    "website": "anzaeee.github.io"
-  },
-  "games": {
-    "riddles": [
-      {
-        "question": "I connect professionals worldwide, my color is blue, and I'm owned by Microsoft. What platform am I?",
-        "answer": "linkedin",
-        "hint": "Think business networking",
-        "reveal": "LinkedIn Profile",
-        "value": "linkedin.com/in/anzay"
-      },
-      {
-        "question": "I'm where code lives, I have a cat logo, and developers push to me daily. What am I?",
-        "answer": "github",
-        "hint": "Where developers collaborate",
-        "reveal": "GitHub Profile",
-        "value": "github.com/anzaeee"
-      },
-      {
-        "question": "I have an @ symbol, I carry messages, and I'm essential for professional contact. What am I?",
-        "answer": "email",
-        "hint": "Electronic mail",
-        "reveal": "Email Address",
-        "value": "shanzayyasad@gmail.com"
-      },
-      {
-        "question": "I have 10 digits in the US, I ring when someone calls, and I start with area code 555. What am I?",
-        "answer": "phone",
-        "hint": "Communication device",
-        "reveal": "Phone Number",
-        "value": "(555) 123-4567"
-      }
-    ],
-    "wordScramble": [
-      {
-        "scrambled": "YAZNAHS DASA",
-        "answer": "SHANZAY ASAD",
-        "category": "name",
-        "hint": "My full name",
-        "reveal": "Full Name",
-        "value": "Shanzay Asad"
-      },
-      {
-        "scrambled": "QA YREVILED REGANAM",
-        "answer": "QA DELIVERY MANAGER",
-        "category": "profession",
-        "hint": "My job title",
-        "reveal": "Profession",
-        "value": "QA Delivery Manager"
-      },
-      {
-        "scrambled": "",
-        "answer": "DBAASIMLA",
-        "category": "location",
-        "hint": "Where I'm located",
-        "reveal": "Location",
-        "value": "Islamabad, Pakistan"
-      },
-      {
-        "scrambled": "KNIRRTH.AI",
-        "answer": "THINKRR.AI",
-        "category": "company",
-        "hint": "Where I work",
-        "reveal": "Current Company",
-        "value": "Thinkrr.ai"
-      }
-    ],
-    "codeBreaker": [
-      {
-        "encoded": "19-8-1-14-26-1-25   1-19-1-4",
-        "cipher": "A=1, B=2, C=3... Z=26",
-        "answer": "SHANZAY ASAD",
-        "category": "name",
-        "hint": "My name in numbers",
-        "reveal": "Full Name",
-        "value": "Shanzay Asad"
-      },
-      {
-        "encoded": "vb jzwtqd~mjbw~wfs~ne~jfwljw~rfs~ujw~fqnx~ymjw~",
-        "cipher": "ROT-5 cipher (shift by 5)",
-        "answer": "qa-delivery-manager",
-        "category": "profession",
-        "hint": "My profession with dashes",
-        "reveal": "Profession",
-        "value": "QA Delivery Manager"
-      }
-    ]
+    "github": "github.com/anzaeee"
   },
   "socialLinks": {
     "github": "https://github.com/anzaeee",
-    "linkedin": "https://linkedin.com/in/anzay",
-    "website": "https://anzaeee.github.io"
+    "linkedin": "https://linkedin.com/in/anzay"
   }
 }
