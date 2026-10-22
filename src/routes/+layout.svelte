@@ -16,7 +16,6 @@
 		{ name: 'Resume', href: '/resume' },
 		{ name: 'Contact', href: '/contact' }
 	];
-	export const prerender = true;
 
 	let menuOpen = $state(false);
 	function closeMenu() { menuOpen = false; }
