@@ -1,12 +1,16 @@
 <script lang="ts">
 	import '../app.css';
 	import { page } from '$app/stores';
-	import { writable } from 'svelte/store';
+	import contactData from '$lib/contact-data.json';
+	import SpaceBackground from '$lib/components/space/SpaceBackground.svelte';
+	import PixelSprite from '$lib/components/space/PixelSprite.svelte';
+	import { sparkle } from '$lib/components/space/sprites';
 
 	let { children } = $props();
 
+	const links = contactData.socialLinks;
+
 	const navItems = [
-		{ name: 'Home', href: '/' },
 		{ name: 'About', href: '/about' },
 		{ name: 'Projects', href: '/projects' },
 		{ name: 'Resume', href: '/resume' },
@@ -14,66 +18,80 @@
 	];
 	export const prerender = true;
 
-	const menuOpen = writable(false);
-	function closeMenu() { menuOpen.set(false); }
-	function toggleMenu() { menuOpen.update(v => !v); }
+	let menuOpen = $state(false);
+	function closeMenu() { menuOpen = false; }
 </script>
 
 <svelte:head>
 	<title>Shanzay Asad | Product Engineer</title>
-	<meta name="description" content="A modern dark portfolio showcasing development projects and skills" />
-	<link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+	<meta name="description" content="Shanzay Asad's portfolio: projects, games, resume and contact." />
 </svelte:head>
 
+<svelte:window onkeydown={(e) => e.key === 'Escape' && closeMenu()} />
+
+<SpaceBackground />
+
 <div class="app">
-	<nav class="navbar">
-		<div class="container">
-			<div class="nav-content">
-				<div class="logo">
-					<a href="/" class="logo-link">
-						<span class="logo-text">Shanzay Asad</span>
+	<header class="navbar">
+		<div class="nav-inner">
+			<a href="/" class="logo" aria-label="Home" onclick={closeMenu}>
+				<PixelSprite {...sparkle} pixel={3} />
+				<span>shanzay</span>
+			</a>
+
+			<nav class="nav-links" class:open={menuOpen} aria-label="Main">
+				{#each navItems as item}
+					<a
+						href={item.href}
+						class="nav-link"
+						class:active={$page.url.pathname === item.href}
+						aria-current={$page.url.pathname === item.href ? 'page' : undefined}
+						onclick={closeMenu}
+					>
+						{item.name}
 					</a>
+				{/each}
+				<div class="mobile-ctas">
+					<a class="btn btn-outline" href={links.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
+					<a class="btn" href="/contact" onclick={closeMenu}>Get in touch</a>
 				</div>
-				
-				<div class="nav-links { $menuOpen ? 'open' : '' }">
-					{#each navItems as item}
-						<a 
-							href={item.href} 
-							class="nav-link"
-							class:active={$page.url.pathname === item.href}
-							onclick={closeMenu}
-						>
-							{item.name}
-						</a>
-					{/each}
-				</div>
-				
-				<button class="mobile-menu-btn" onclick={toggleMenu} aria-label="Open navigation" type="button">
-					<span></span>
-					<span></span>
-					<span></span>
-				</button>
+			</nav>
+
+			<div class="ctas">
+				<a class="text-link" href={links.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+				<a class="btn btn-outline" href={links.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
+				<a class="btn" href="/contact">Get in touch</a>
 			</div>
+
+			<button
+				class="mobile-menu-btn"
+				class:open={menuOpen}
+				onclick={() => (menuOpen = !menuOpen)}
+				aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}
+				aria-expanded={menuOpen}
+				type="button"
+			>
+				<span></span>
+				<span></span>
+			</button>
 		</div>
-	</nav>
+	</header>
 
 	<main class="main-content">
 		{@render children?.()}
 	</main>
 
 	<footer class="footer">
-		<div class="container">
-			<div class="footer-content">
-				<p>&copy; 2025 Portfolio. Built with Svelte, Vercel & passion.</p>
-				<div class="footer-links">
-					<a href="https://github.com/anzaeee" target="_blank" rel="noopener noreferrer">GitHub</a>
-					<a href="https://www.linkedin.com/in/anzay/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-				</div>
+		<div class="footer-content">
+			<p>&copy; {new Date().getFullYear()} Shanzay Asad</p>
+			<div class="footer-links">
+				<a href={links.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+				<a href={links.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
 			</div>
 		</div>
 	</footer>
 
-	{#if $menuOpen}
+	{#if menuOpen}
 		<button class="mobile-backdrop" onclick={closeMenu} aria-label="Close navigation" type="button"></button>
 	{/if}
 </div>
@@ -86,99 +104,127 @@
 	}
 
 	.navbar {
-		background-color: var(--secondary-bg);
-		border-bottom: 1px solid var(--border-color);
-		padding: 1rem 0;
 		position: sticky;
 		top: 0;
 		z-index: 100;
+		background: rgba(8, 8, 10, 0.92);
+		border-bottom: 1px solid #1f1f25;
 		backdrop-filter: blur(10px);
 	}
 
-	.nav-content {
+	.nav-inner {
 		display: flex;
-		justify-content: space-between;
 		align-items: center;
+		gap: 2.5rem;
+		max-width: 1280px;
+		height: 72px;
+		margin: 0 auto;
+		padding: 0 2rem;
 	}
 
-	.logo-link {
-		font-size: 1.5rem;
+	.logo {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: var(--pixel-display);
+		font-size: 1.6rem;
 		font-weight: 700;
-		background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
+		color: #fff;
+	}
+
+	.logo:hover {
+		color: #fff;
 	}
 
 	.nav-links {
 		display: flex;
-		gap: 2rem;
 		align-items: center;
+		gap: 0.25rem;
+		flex: 1;
 	}
 
-	.nav-links.open {
-		display: flex !important;
-		flex-direction: column;
-		position: absolute;
-		top: 100%;
-		left: 0;
-		width: 100vw;
-		background: var(--secondary-bg);
-		z-index: 200;
-		padding: 2rem;
-		box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-		gap: 1.5rem;
-		align-items: flex-start;
-		border-top: 1px solid var(--border-color);
+	.nav-link {
+		padding: 0.45rem 0.8rem;
+		border-radius: 6px;
+		color: #e8e8ee;
+		font-size: 0.95rem;
+		font-weight: 500;
+		transition: background 0.15s ease, color 0.15s ease;
 	}
 
-	.nav-links.open .nav-link {
-		width: 100%;
-		padding: 1rem;
-		border-radius: 0.5rem;
-		transition: all 0.3s ease;
-		border: 1px solid transparent;
+	.nav-link:hover {
+		background: #17171d;
+		color: #fff;
 	}
 
-	.nav-links.open .nav-link:hover {
-		background-color: var(--hover-bg);
-		border-color: var(--accent-cyan);
+	.nav-link.active {
+		color: #fff;
+		background: #1c1a2e;
 	}
 
-	.mobile-backdrop {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100vw;
-		height: 100vh;
-		background: rgba(0,0,0,0.3);
-		z-index: 150;
-		border: none;
-		cursor: pointer;
+	.ctas {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	.ctas .btn,
+	.mobile-ctas .btn {
+		padding: 0.55rem 1.1rem;
+		font-size: 0.92rem;
+	}
+
+	.text-link {
+		margin-right: 0.5rem;
+		color: #e8e8ee;
+		font-size: 0.95rem;
+		font-weight: 500;
+	}
+
+	.text-link:hover {
+		color: #fff;
+	}
+
+	.mobile-ctas {
+		display: none;
 	}
 
 	.mobile-menu-btn {
 		display: none;
 		flex-direction: column;
-		cursor: pointer;
-		gap: 4px;
-		background: none;
+		justify-content: center;
+		gap: 7px;
+		width: 40px;
+		height: 40px;
+		margin-left: auto;
+		padding: 0 8px;
 		border: none;
-		padding: 0.5rem;
-		border-radius: 0.5rem;
-		transition: background-color 0.3s ease;
-	}
-
-	.mobile-menu-btn:hover {
-		background-color: var(--hover-bg);
+		background: none;
+		cursor: pointer;
 	}
 
 	.mobile-menu-btn span {
-		width: 25px;
-		height: 3px;
-		background: var(--accent-cyan);
-		transition: all 0.3s ease;
-		border-radius: 2px;
+		display: block;
+		height: 2px;
+		background: #fff;
+		transition: transform 0.2s ease;
+	}
+
+	.mobile-menu-btn.open span:first-child {
+		transform: translateY(4.5px) rotate(45deg);
+	}
+
+	.mobile-menu-btn.open span:last-child {
+		transform: translateY(-4.5px) rotate(-45deg);
+	}
+
+	.mobile-backdrop {
+		position: fixed;
+		inset: 0;
+		z-index: 90;
+		border: none;
+		background: rgba(0, 0, 0, 0.5);
+		cursor: pointer;
 	}
 
 	.main-content {
@@ -187,47 +233,89 @@
 	}
 
 	.footer {
-		background-color: var(--secondary-bg);
-		border-top: 1px solid var(--border-color);
-		padding: 2rem 0;
-		margin-top: 4rem;
+		border-top: 1px solid #1f1f25;
+		background: rgba(8, 8, 10, 0.85);
+		padding: 1.5rem 2rem;
 	}
 
 	.footer-content {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		max-width: 1280px;
+		margin: 0 auto;
+	}
+
+	.footer p {
+		margin: 0;
+		font-family: var(--pixel);
+		font-size: 0.75rem;
+		letter-spacing: 0.06em;
+		color: var(--text-muted);
 	}
 
 	.footer-links {
 		display: flex;
-		gap: 2rem;
+		gap: 1.5rem;
 	}
 
 	.footer-links a {
+		font-size: 0.9rem;
 		color: var(--text-secondary);
-		transition: color 0.3s ease;
 	}
 
 	.footer-links a:hover {
-		color: var(--accent-cyan);
+		color: #fff;
 	}
 
-	@media (max-width: 768px) {
-		.nav-links {
+	@media (max-width: 900px) {
+		.nav-inner {
+			height: 64px;
+			padding: 0 1rem;
+		}
+
+		.ctas {
 			display: none;
 		}
-		.nav-links.open {
-			display: flex !important;
-		}
+
 		.mobile-menu-btn {
 			display: flex;
 		}
 
+		.nav-links {
+			display: none;
+			position: absolute;
+			top: 100%;
+			left: 0;
+			right: 0;
+			z-index: 200;
+			flex-direction: column;
+			align-items: stretch;
+			gap: 0.25rem;
+			padding: 1rem;
+			background: #08080a;
+			border-bottom: 1px solid #1f1f25;
+		}
+
+		.nav-links.open {
+			display: flex;
+		}
+
+		.nav-link {
+			padding: 0.8rem 1rem;
+			font-size: 1rem;
+		}
+
+		.mobile-ctas {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 0.75rem;
+			margin-top: 0.75rem;
+		}
+
 		.footer-content {
 			flex-direction: column;
-			gap: 1rem;
-			text-align: center;
+			gap: 0.75rem;
 		}
 	}
 </style>

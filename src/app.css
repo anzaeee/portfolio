@@ -1,14 +1,21 @@
-/* Global styles for dark mode portfolio */
+/* Pixel-space theme */
 :root {
-  --primary-bg: #0a0a0a;
-  --secondary-bg: #1a1a1a;
-  --accent-cyan: #00ffff;
-  --accent-purple: #8b5cf6;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --border-color: #334155;
-  --hover-bg: #2d3748;
+  --primary-bg: #050508;
+  --secondary-bg: #101016;
+  --accent-cyan: #a99fff;
+  --accent-purple: #7262ff;
+  --accent-red: #ff6b6b;
+  --text-primary: #f5f5f7;
+  --text-secondary: #b4b4c0;
+  --text-muted: #7c7c8a;
+  --border-color: #26262f;
+  --hover-bg: #1c1a2e;
+
+  --violet: #7262ff;
+  --violet-hover: #8676ff;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --pixel: 'Silkscreen', 'Courier New', monospace;
+  --pixel-display: 'Pixelify Sans', 'Silkscreen', monospace;
 }
 
 * {
@@ -18,7 +25,7 @@
 }
 
 body {
-  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: var(--font);
   background-color: var(--primary-bg);
   color: var(--text-primary);
   line-height: 1.6;
@@ -36,21 +43,24 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 2.5rem;
-  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-family: var(--pixel-display);
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #fff;
+  text-shadow: 0 0.08em 0 #3423a8;
 }
 
 h2 {
+  font-family: var(--pixel-display);
   font-size: 2rem;
-  color: var(--accent-cyan);
+  font-weight: 700;
+  color: #fff;
 }
 
 h3 {
-  font-size: 1.5rem;
-  color: var(--accent-purple);
+  font-size: 1.25rem;
+  color: var(--accent-cyan);
 }
 
 p {
@@ -70,49 +80,54 @@ a:hover {
 
 /* Buttons */
 .btn {
-  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-  color: #000000;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background: var(--violet);
+  color: #fff;
+  border: 1px solid var(--violet);
+  padding: 0.7rem 1.3rem;
+  border-radius: 6px;
+  font-family: var(--font);
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-  text-shadow: none;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  font-size: 0.95rem;
 }
 
 .btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0, 255, 255, 0.2);
+  background: var(--violet-hover);
+  border-color: var(--violet-hover);
+  color: #fff;
 }
 
 .btn-outline {
-  background: transparent;
-  color: var(--accent-cyan);
-  border: 2px solid var(--accent-cyan);
+  background: #fff;
+  color: #111;
+  border: 1px solid #fff;
 }
 
 .btn-outline:hover {
-  background: var(--accent-cyan);
-  color: var(--primary-bg);
+  background: #e9e7f5;
+  border-color: #e9e7f5;
+  color: #111;
 }
 
 /* Cards */
 .card {
-  background-color: var(--secondary-bg);
+  background-color: rgba(16, 16, 22, 0.88);
   color: var(--text-primary);
   border: 1px solid var(--border-color);
-  border-radius: 1rem;
+  border-radius: 12px;
   padding: 2rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+  backdrop-filter: blur(6px);
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 25px rgba(0, 255, 255, 0.1);
-  border-color: var(--accent-cyan);
+  transform: translateY(-2px);
+  border-color: var(--accent-purple);
 }
 
 /* Navigation */
@@ -129,8 +144,8 @@ a:hover {
 }
 
 .nav-link.active {
-  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-  color: var(--primary-bg);
+  background: var(--hover-bg);
+  color: #fff;
 }
 
 /* Animations */
@@ -172,8 +187,8 @@ a:hover {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-  border-radius: 4px;
+  background: var(--accent-purple);
+  border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -193,8 +208,8 @@ input, textarea, select {
 
 input:focus, textarea:focus, select:focus {
   outline: none;
-  border-color: var(--accent-cyan);
-  box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.1);
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 3px rgba(114, 98, 255, 0.2);
 }
 
 /* Utility classes */
@@ -263,7 +278,7 @@ input:focus, textarea:focus, select:focus {
   }
   
   h1 {
-    font-size: 2rem;
+    font-size: 2.1rem;
   }
   
   h2 {
