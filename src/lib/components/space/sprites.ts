@@ -38,3 +38,9 @@ export const heart = {
 	rows: ['.HH.HH.', 'HHHHHHH', 'HHHHHHH', '.HHHHH.', '..HHH..', '...H...'],
 	colors: { H: '#ff5c8a' }
 };
+
+/** Achievement star, for "unlocked" tiles */
+export const star = {
+	rows: ['....Y....', '...YYY...', 'YYYYYYYYY', '.YYYWYYY.', '..YYYYY..', '.YYY.YYY.', '.YY...YY.'],
+	colors: { Y: '#ffd25e', W: '#fff6d6' }
+};

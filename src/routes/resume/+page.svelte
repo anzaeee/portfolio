@@ -1,703 +1,412 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { educationJourney } from '$lib/profile';
 	import contactData from '$lib/contact-data.json';
+	import PixelSprite from '$lib/components/space/PixelSprite.svelte';
+	import { rocket } from '$lib/components/space/sprites';
+	import PageHeader from '$lib/components/ui/PageHeader.svelte';
+	import Screen from '$lib/components/ui/Screen.svelte';
+	import SectionNav from '$lib/components/ui/SectionNav.svelte';
 
 	// Career started in 2022 (Foretheta)
 	const yearsInIndustry = new Date().getFullYear() - 2022;
+	const last = educationJourney.length - 1;
 
-	let currentStage = 0;
-	let stagesVisible = false;
-	let journeyStarted = false;
+	let current = $state(0);
+	const stage = $derived(educationJourney[current]);
 
-	function startJourney() {
-		journeyStarted = true;
-		setTimeout(() => {
-			stagesVisible = true;
-		}, 500);
+	const stats = [
+		{ value: String(yearsInIndustry), label: 'Years in industry' },
+		{ value: '5+', label: 'Interns mentored' },
+		{ value: '100k+', label: 'AO3 hits' }
+	];
+
+	const notes = [
+		{ title: 'Current focus', text: 'Leading development of scalable client-server architecture by ensuring timely delivery without compromising on software quality.' },
+		{ title: 'Philosophy', text: 'Continuous learning, clean code, and user-centered development drive everything I do.' },
+		{ title: 'Future goals', text: 'Expanding into AI/ML powered development and deployment to make solutions meant to last a lifetime.' }
+	];
+
+	const go = (index: number) => (current = Math.max(0, Math.min(last, index)));
+
+	// Arrow keys move between levels, like the home console
+	function onKeydown(event: KeyboardEvent) {
+		if (event.metaKey || event.ctrlKey || event.altKey) return;
+		if ((event.target as HTMLElement).closest('input, textarea, select, [contenteditable]')) return;
+		if (event.key === 'ArrowLeft') go(current - 1);
+		else if (event.key === 'ArrowRight') go(current + 1);
+		else return;
+		event.preventDefault();
 	}
 
-	function nextStage() {
-		if (currentStage < educationJourney.length - 1) {
-			currentStage++;
-		}
-	}
-
-	function prevStage() {
-		if (currentStage > 0) {
-			currentStage--;
-		}
-	}
-
-	function goToStage(index: number) {
-		currentStage = index;
-	}
-
-	onMount(() => {
-		// Auto-start the journey after a brief delay
-		setTimeout(() => {
-			if (!journeyStarted) {
-				startJourney();
-			}
-		}, 1000);
-	});
-
-	$: currentStageData = educationJourney[currentStage];
+	const sections = [
+		{ id: 'levels', label: 'Journey' },
+		{ id: 'full-picture', label: 'Full picture' },
+		{ id: 'notes', label: 'Notes' }
+	];
 </script>
 
-<div class="resume-page">
-	<div class="container">
-		<div class="page-header fade-in-up">
-			<h1>My Educational Journey</h1>
-			<p>From first lines of code to professional software development</p>
-		</div>
+<svelte:head>
+	<title>Resume | Shanzay Asad</title>
+</svelte:head>
 
-		{#if !journeyStarted}
-			<div class="journey-intro">
-				<div class="intro-card">
-					<h2>🎯 Interactive Resume Experience</h2>
-					<p>
-						Take a journey through my educational path and discover how each stage shaped my career in technology. 
-						From the start of my educational/professional life to leading enterprise software development.
-					</p>
-					<button class="btn start-journey-btn" on:click={startJourney}>
-						🚀 Begin the Journey
-					</button>
-				</div>
-			</div>
-		{:else}
-			<div class="journey-container" class:visible={stagesVisible}>
-				<!-- Stage Navigation -->
-				<div class="stage-nav">
-					{#each educationJourney as stage, index}
-						<button 
-							class="stage-dot"
-							class:active={index === currentStage}
-							class:completed={index < currentStage}
-							style="border-color: {stage.color}"
-							on:click={() => goToStage(index)}
-							title={stage.title}
-						>
-							<span class="stage-icon">{stage.icon}</span>
-						</button>
+<svelte:window onkeydown={onKeydown} />
+
+<div class="px-shell">
+	<SectionNav destination="Resume" {sections} />
+
+<div class="px-page">
+	<PageHeader destination="Resume" kicker="Career log" title="My journey">
+		<p>From first lines of code to professional software development. Pick a level, or use the arrow keys.</p>
+	</PageHeader>
+
+	<section id="levels" aria-label="Journey">
+		<nav class="levels" aria-label="Journey stages">
+			{#each educationJourney as item, i}
+				<button
+					type="button"
+					class="level px-select"
+					class:selected={i === current}
+					class:cleared={i < current}
+					aria-current={i === current ? 'step' : undefined}
+					onclick={() => go(i)}
+				>
+					<span class="px-label">Lv {String(i + 1).padStart(2, '0')}</span>
+					<span class="level-title">{item.title}</span>
+					<span class="level-period">{item.period}</span>
+					{#if i === current}
+						<span class="pilot" aria-hidden="true"><PixelSprite {...rocket} pixel={2} /></span>
+					{/if}
+				</button>
+			{/each}
+		</nav>
+
+		<Screen glow power={false}>
+			{#key current}
+				<article class="stage">
+					<span class="px-label">Lv {String(current + 1).padStart(2, '0')} · {stage.period}</span>
+					<h2>{stage.title}</h2>
+					<p class="institution">{stage.institution}</p>
+					<p class="description">{stage.description}</p>
+
+					<span class="px-label loot">Achievements</span>
+					<ul class="achievements">
+						{#each stage.achievements as achievement, i}
+							<li style="animation-delay: {i * 0.08}s"><span class="bullet" aria-hidden="true">▶</span>{achievement}</li>
+						{/each}
+					</ul>
+				</article>
+			{/key}
+		</Screen>
+
+		<div class="controls">
+			<button class="px-btn" type="button" onclick={() => go(current - 1)} disabled={current === 0}><b>B</b> Previous</button>
+
+			<div class="progress" role="img" aria-label="Stage {current + 1} of {educationJourney.length}">
+				<span class="px-label">Progress {current + 1}/{educationJourney.length}</span>
+				<span class="segments">
+					{#each educationJourney as _, i}
+						<span class="segment" class:filled={i <= current}></span>
 					{/each}
-				</div>
-
-				<!-- Current Stage Display -->
-				<div class="stage-display">
-					<div class="stage-content" style="border-left-color: {currentStageData.color}">
-						<div class="stage-header">
-							<div class="stage-title-section">
-								<span class="stage-emoji" style="color: {currentStageData.color}">
-									{currentStageData.icon}
-								</span>
-								<div>
-									<h2 class="stage-title">{currentStageData.title}</h2>
-									<div class="stage-period">{currentStageData.period}</div>
-									<div class="stage-institution">{currentStageData.institution}</div>
-								</div>
-							</div>
-						</div>
-
-						<p class="stage-description">{currentStageData.description}</p>
-
-						<div class="achievements-section">
-							<h3>Key Achievements</h3>
-							<div class="achievements-list">
-								{#each currentStageData.achievements as achievement, index}
-									<div 
-										class="achievement-item"
-										style="animation-delay: {index * 0.1}s"
-									>
-										<span class="achievement-bullet" style="background-color: {currentStageData.color}">
-											✓
-										</span>
-										<span class="achievement-text">{achievement}</span>
-									</div>
-								{/each}
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<!-- Navigation Controls -->
-				<div class="journey-controls">
-					<button 
-						class="btn btn-outline nav-btn" 
-						on:click={prevStage}
-						disabled={currentStage === 0}
-					>
-						← Previous
-					</button>
-					
-					<div class="stage-counter">
-						{currentStage + 1} of {educationJourney.length}
-					</div>
-					
-					<button 
-						class="btn btn-outline nav-btn" 
-						on:click={nextStage}
-						disabled={currentStage === educationJourney.length - 1}
-					>
-						Next →
-					</button>
-				</div>
-
-				<!-- Progress Bar -->
-				<div class="progress-container">
-					<div class="progress-bar">
-						<div 
-							class="progress-fill"
-							style="width: {((currentStage + 1) / educationJourney.length) * 100}%; background-color: {currentStageData.color}"
-						></div>
-					</div>
-					<div class="progress-text">
-						Journey Progress: {Math.round(((currentStage + 1) / educationJourney.length) * 100)}%
-					</div>
-				</div>
+				</span>
 			</div>
-		{/if}
 
-		<!-- Download CTA -->
-		<div class="download-section">
-			<div class="download-card">
-				<h2>📄 Want the full picture?</h2>
-				<p>
-					My complete work history and recommendations live on LinkedIn. Or get in touch and
-					I'll send my resume over.
-				</p>
-				<div class="download-buttons">
-					<a class="btn download-btn" href={contactData.socialLinks.linkedin} target="_blank" rel="noopener noreferrer">
-						💼 View on LinkedIn
-					</a>
-					<a class="btn btn-outline" href="/contact">
-						📧 Get in touch
-					</a>
-				</div>
-				<div class="resume-stats">
-					<div class="resume-stat">
-						<span class="stat-number">{yearsInIndustry}</span>
-						<span class="stat-label">Years in industry</span>
+			<button class="px-btn primary" type="button" onclick={() => go(current + 1)} disabled={current === last}><b>A</b> Next</button>
+		</div>
+	</section>
+
+	<section id="full-picture">
+	<Screen glow>
+		<div class="full-picture">
+			<h2>Want the full picture?</h2>
+			<p>My complete work history and recommendations live on LinkedIn. Or get in touch and I'll send my resume over.</p>
+			<div class="actions">
+				<a class="px-btn primary" href={contactData.socialLinks.linkedin} target="_blank" rel="noopener noreferrer"><b>A</b> View on LinkedIn ↗</a>
+				<a class="px-btn" href="/contact"><b>B</b> Get in touch</a>
+			</div>
+			<div class="hud">
+				{#each stats as stat}
+					<div class="hud-stat">
+						<span class="hud-value">{stat.value}</span>
+						<span class="px-label">{stat.label}</span>
 					</div>
-					<div class="resume-stat">
-						<span class="stat-number">5+</span>
-						<span class="stat-label">Interns mentored</span>
-					</div>
-					<div class="resume-stat">
-						<span class="stat-number">100k+</span>
-						<span class="stat-label">AO3 hits</span>
-					</div>
-				</div>
+				{/each}
 			</div>
 		</div>
+	</Screen>
+	</section>
 
-		<!-- Additional Info -->
-		<div class="additional-info">
-			<div class="info-grid">
-				<div class="info-card">
-					<h3>🎯 Current Focus</h3>
-					<p>Leading development of scalable client-server architecture by ensuring timely delivery without compromising on software quality</p>
+	<section id="notes">
+		<h2 class="px-section-title">Notes</h2>
+		<div class="notes">
+			{#each notes as note}
+				<div class="note px-select">
+					<span class="px-label">{note.title}</span>
+					<p>{note.text}</p>
 				</div>
-				<div class="info-card">
-					<h3>🌟 Philosophy</h3>
-					<p>Continuous learning, clean code, and user-centered development drive everything I do.</p>
-				</div>
-				<div class="info-card">
-					<h3>🚀 Future Goals</h3>
-					<p>Expanding into AI/ML powered development and deployment to make solutions meant to last a lifetime.</p>
-				</div>
-			</div>
+			{/each}
 		</div>
-	</div>
-
-	<!-- Background Elements -->
-	<div class="education-particles">
-		{#each Array(12) as _, i}
-			<div class="particle edu-particle-{i + 1}">📚</div>
-		{/each}
-	</div>
+	</section>
+</div>
 </div>
 
 <style>
-	.resume-page {
-		position: relative;
-		min-height: 100vh;
-		padding: 2rem 0;
+	.levels {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 1.25rem;
+		margin-bottom: 2.25rem;
 	}
 
-	.page-header {
-		text-align: center;
-		margin-bottom: 4rem;
-	}
-
-	.page-header h1 {
-		font-size: 3rem;
-		margin-bottom: 1rem;
-	}
-
-	.page-header p {
-		font-size: 1.2rem;
-		color: var(--text-secondary);
-	}
-
-	.journey-intro {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		min-height: 60vh;
-	}
-
-	.intro-card {
-		background: var(--secondary-bg);
-		border-radius: 1.5rem;
-		padding: 4rem;
-		text-align: center;
-		border: 1px solid var(--border-color);
-		max-width: 600px;
-		animation: fadeInUp 0.8s ease-out;
-	}
-
-	.intro-card h2 {
-		color: var(--accent-cyan);
-		margin-bottom: 2rem;
-		font-size: 2rem;
-	}
-
-	.intro-card p {
-		font-size: 1.1rem;
-		line-height: 1.8;
-		margin-bottom: 3rem;
-		color: var(--text-secondary);
-	}
-
-	.start-journey-btn {
-		font-size: 1.3rem;
-		padding: 1.2rem 2.5rem;
-	}
-
-	.journey-container {
-		opacity: 0;
-		transform: translateY(30px);
-		transition: all 0.8s ease;
-		max-width: 900px;
-		margin: 0 auto;
-	}
-
-	.journey-container.visible {
-		opacity: 1;
-		transform: translateY(0);
-	}
-
-	.stage-nav {
-		display: flex;
-		justify-content: center;
-		gap: 2rem;
-		margin-bottom: 3rem;
-		flex-wrap: wrap;
-	}
-
-	.stage-dot {
-		width: 4rem;
-		height: 4rem;
-		border-radius: 50%;
-		border: 3px solid var(--border-color);
-		background: var(--secondary-bg);
-		cursor: pointer;
-		transition: all 0.3s ease;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		position: relative;
-	}
-
-	.stage-dot:hover {
-		transform: scale(1.1);
-		box-shadow: 0 5px 15px rgba(114, 98, 255, 0.3);
-	}
-
-	.stage-dot.active {
-		background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-		border-color: var(--accent-cyan);
-		transform: scale(1.2);
-	}
-
-	.stage-dot.completed {
-		background: var(--accent-cyan);
-		border-color: var(--accent-cyan);
-	}
-
-	.stage-icon {
-		font-size: 1.5rem;
-	}
-
-	.stage-display {
-		margin-bottom: 3rem;
-	}
-
-	.stage-content {
-		background: var(--secondary-bg);
-		border-radius: 1rem;
-		padding: 3rem;
-		border: 1px solid var(--border-color);
-		border-left: 5px solid var(--accent-cyan);
-		animation: slideInRight 0.6s ease-out;
-	}
-
-	.stage-header {
-		margin-bottom: 2rem;
-	}
-
-	.stage-title-section {
-		display: flex;
-		align-items: flex-start;
-		gap: 1.5rem;
-	}
-
-	.stage-emoji {
-		font-size: 3rem;
-		line-height: 1;
-	}
-
-	.stage-title {
-		color: var(--accent-cyan);
-		font-size: 2rem;
-		margin-bottom: 0.5rem;
-	}
-
-	.stage-period {
-		color: var(--accent-purple);
-		font-weight: 600;
-		font-size: 1.1rem;
-		margin-bottom: 0.5rem;
-	}
-
-	.stage-institution {
-		color: var(--text-secondary);
-		font-style: italic;
-	}
-
-	.stage-description {
-		font-size: 1.1rem;
-		line-height: 1.8;
-		color: var(--text-secondary);
-		margin-bottom: 2rem;
-	}
-
-	.achievements-section h3 {
-		color: var(--accent-purple);
-		margin-bottom: 1.5rem;
-		font-size: 1.3rem;
-	}
-
-	.achievements-list {
+	.level {
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
-	}
-
-	.achievement-item {
-		display: flex;
 		align-items: flex-start;
-		gap: 1rem;
-		opacity: 0;
-		animation: fadeInLeft 0.5s ease-out forwards;
+		gap: 0.3rem;
+		padding: 1rem 1.1rem 1.1rem;
+		background: rgba(0, 0, 0, 0.75);
+		border: 2px solid #34344a;
+		border-radius: 6px;
+		color: #fff;
+		font: inherit;
+		text-align: left;
+		cursor: pointer;
+		transition: border-color 0.15s ease, background 0.15s ease;
 	}
 
-	.achievement-bullet {
-		width: 1.5rem;
-		height: 1.5rem;
-		border-radius: 50%;
+	.level:hover {
+		border-color: #5a4ae0;
+	}
+
+	.level.selected {
+		border-color: #8f7dff;
+		background: rgba(52, 35, 168, 0.25);
+		box-shadow: 0 0 24px rgba(114, 98, 255, 0.35);
+	}
+
+	.level.cleared .px-label::after {
+		content: ' ✓';
+		color: #4fd1a5;
+	}
+
+	.level-title {
+		font-family: var(--pixel-display);
+		font-size: 1.2rem;
+		font-weight: 700;
+		line-height: 1.15;
+	}
+
+	.level-period {
+		font-family: var(--pixel);
+		font-size: 0.7rem;
+		color: var(--text-muted);
+	}
+
+	.pilot {
+		position: absolute;
+		left: 50%;
+		bottom: -18px;
+		transform: translateX(-50%);
+		animation: px-bob 1.6s ease-in-out infinite;
+	}
+
+	.stage {
+		padding: 0.75rem 0.5rem;
+		animation: px-power-on 0.3s ease-out;
+	}
+
+	.stage h2 {
+		margin: 0.4rem 0 0.2rem;
+		font-size: 2.2rem;
+		text-shadow: 0 0.06em 0 #3423a8;
+	}
+
+	.institution {
+		margin-bottom: 1rem;
+		font-family: var(--pixel);
+		font-size: 0.85rem;
+		letter-spacing: 0.04em;
+		color: #d4d0e8;
+	}
+
+	.description {
+		font-size: 1.05rem;
+		line-height: 1.75;
+	}
+
+	.loot {
+		margin: 1.75rem 0 0.9rem;
+	}
+
+	.achievements {
 		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 0.8rem;
-		font-weight: bold;
-		color: #000000;
-		flex-shrink: 0;
-		margin-top: 0.1rem;
+		flex-direction: column;
+		gap: 0.75rem;
+		list-style: none;
 	}
 
-	.achievement-text {
-		flex: 1;
+	.achievements li {
+		display: flex;
+		gap: 0.75rem;
 		line-height: 1.6;
 		color: var(--text-primary);
+		opacity: 0;
+		animation: appear 0.35s ease-out forwards;
 	}
 
-	.journey-controls {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 2rem;
-		gap: 1rem;
-		flex-wrap: wrap;
+	.bullet {
+		flex-shrink: 0;
+		padding-top: 0.2rem;
+		font-family: var(--pixel);
+		font-size: 0.7rem;
+		color: var(--violet);
 	}
 
-	.nav-btn {
-		min-width: 120px;
-	}
-
-	.nav-btn:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
-
-	.stage-counter {
-		background: var(--primary-bg);
-		padding: 0.75rem 1.5rem;
-		border-radius: 2rem;
-		border: 1px solid var(--border-color);
-		color: var(--accent-cyan);
-		font-weight: 600;
-	}
-
-	.progress-container {
-		text-align: center;
-		margin-bottom: 4rem;
-	}
-
-	.progress-bar {
-		width: 100%;
-		height: 8px;
-		background: var(--primary-bg);
-		border-radius: 4px;
-		overflow: hidden;
-		margin-bottom: 1rem;
-	}
-
-	.progress-fill {
-		height: 100%;
-		transition: all 0.5s ease;
-		border-radius: 4px;
-	}
-
-	.progress-text {
-		color: var(--text-muted);
-		font-size: 0.9rem;
-		font-weight: 600;
-	}
-
-	.download-section {
-		margin: 4rem 0;
-	}
-
-	.download-card {
-		background: var(--secondary-bg);
-		border-radius: 1.5rem;
-		padding: 3rem;
-		text-align: center;
-		border: 1px solid var(--border-color);
-		position: relative;
-		overflow: hidden;
-	}
-
-	.download-card::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		height: 4px;
-		background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-	}
-
-	.download-card h2 {
-		color: var(--accent-cyan);
-		margin-bottom: 1.5rem;
-		font-size: 2rem;
-	}
-
-	.download-card p {
-		font-size: 1.1rem;
-		line-height: 1.8;
-		color: var(--text-secondary);
-		margin-bottom: 2.5rem;
-		max-width: 600px;
-		margin-left: auto;
-		margin-right: auto;
-	}
-
-	.download-buttons {
-		display: flex;
-		justify-content: center;
-		gap: 1.5rem;
-		margin-bottom: 3rem;
-		flex-wrap: wrap;
-	}
-
-	.download-btn {
-		font-size: 1.2rem;
-		padding: 1rem 2rem;
-	}
-
-	.resume-stats {
-		display: flex;
-		justify-content: center;
-		gap: 3rem;
-		flex-wrap: wrap;
-	}
-
-	.resume-stat {
-		text-align: center;
-	}
-
-	.stat-number {
-		display: block;
-		font-size: 2rem;
-		font-weight: 700;
-		background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-		margin-bottom: 0.5rem;
-	}
-
-	.stat-label {
-		color: var(--text-muted);
-		font-size: 0.9rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-	}
-
-	.additional-info {
-		margin-top: 4rem;
-	}
-
-	.info-grid {
+	.controls {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-		gap: 2rem;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 1.5rem;
+		margin-top: 1.75rem;
 	}
 
-	.info-card {
-		background: var(--secondary-bg);
-		border-radius: 1rem;
-		padding: 2rem;
-		border: 1px solid var(--border-color);
-		text-align: center;
-		transition: all 0.3s ease;
+	.progress {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.5rem;
 	}
 
-	.info-card:hover {
-		transform: translateY(-4px);
-		border-color: var(--accent-cyan);
-		box-shadow: 0 10px 25px rgba(114, 98, 255, 0.1);
-	}
-
-	.info-card h3 {
-		color: var(--accent-purple);
-		margin-bottom: 1rem;
-		font-size: 1.2rem;
-	}
-
-	.info-card p {
-		color: var(--text-secondary);
-		line-height: 1.6;
-	}
-
-	/* Background particles */
-	.education-particles {
-		position: fixed;
-		top: 0;
-		left: 0;
+	/* Segmented bar, like a health bar */
+	.segments {
+		display: flex;
+		gap: 6px;
 		width: 100%;
-		height: 100%;
-		pointer-events: none;
-		z-index: -1;
+		max-width: 320px;
+		padding: 4px;
+		border: 2px solid #5a4ae0;
+		border-radius: 3px;
 	}
 
-	.particle {
-		position: absolute;
-		font-size: 1.5rem;
-		opacity: 0.1;
-		animation: edu-float 15s ease-in-out infinite;
+	.segment {
+		flex: 1;
+		height: 12px;
+		background: #17142b;
+		transition: background 0.2s ease;
 	}
 
-	/* Particle positions */
-	.edu-particle-1 { top: 10%; left: 5%; animation-delay: 0s; }
-	.edu-particle-2 { top: 20%; right: 10%; animation-delay: 2s; }
-	.edu-particle-3 { top: 30%; left: 15%; animation-delay: 4s; }
-	.edu-particle-4 { top: 40%; right: 20%; animation-delay: 6s; }
-	.edu-particle-5 { top: 50%; left: 25%; animation-delay: 8s; }
-	.edu-particle-6 { top: 60%; right: 30%; animation-delay: 10s; }
-	.edu-particle-7 { top: 70%; left: 35%; animation-delay: 12s; }
-	.edu-particle-8 { top: 80%; right: 40%; animation-delay: 14s; }
-	.edu-particle-9 { top: 15%; left: 70%; animation-delay: 16s; }
-	.edu-particle-10 { top: 25%; right: 60%; animation-delay: 18s; }
-	.edu-particle-11 { top: 35%; left: 80%; animation-delay: 20s; }
-	.edu-particle-12 { top: 45%; right: 50%; animation-delay: 22s; }
-
-	@keyframes edu-float {
-		0%, 100% { transform: translateY(0) rotate(0deg); }
-		50% { transform: translateY(-50px) rotate(180deg); }
+	.segment.filled {
+		background: var(--violet);
+		box-shadow: 0 0 10px rgba(114, 98, 255, 0.6);
 	}
 
-	@keyframes slideInRight {
-		from {
-			opacity: 0;
-			transform: translateX(50px);
+	.full-picture {
+		padding: 1rem 0.5rem;
+		text-align: center;
+	}
+
+	.full-picture h2 {
+		margin-bottom: 0.5rem;
+		text-shadow: 0 0.06em 0 #3423a8;
+	}
+
+	.full-picture p {
+		max-width: 560px;
+		margin: 0 auto;
+		line-height: 1.75;
+	}
+
+	.actions {
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin-top: 1.5rem;
+	}
+
+	.hud {
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 1rem 3rem;
+		margin-top: 2rem;
+		padding-top: 1.5rem;
+		border-top: 2px dashed #4b3bd1;
+	}
+
+	.hud-stat {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.3rem;
+	}
+
+	/* Silkscreen at regular weight: Pixelify's 5 reads like an S/8, and bold Silkscreen fills in the 4 */
+	.hud-value {
+		font-family: var(--pixel);
+		font-size: 2.1rem;
+		font-weight: 400;
+		line-height: 1;
+		color: #fff;
+		text-shadow: 0 0.08em 0 #3423a8;
+	}
+
+	.notes {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+		gap: 1.25rem;
+	}
+
+	.note {
+		padding: 1.25rem 1.4rem;
+		background: rgba(0, 0, 0, 0.75);
+		border: 2px solid #34344a;
+		border-radius: 6px;
+		transition: border-color 0.15s ease;
+	}
+
+	.note:hover {
+		border-color: #5a4ae0;
+	}
+
+	.note p {
+		margin: 0.6rem 0 0;
+		line-height: 1.65;
+	}
+
+	@keyframes appear {
+		from { opacity: 0; transform: translateX(-12px); }
+		to { opacity: 1; transform: none; }
+	}
+
+	@media (max-width: 760px) {
+		.levels {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1.5rem 1rem;
 		}
-		to {
+
+		.controls {
+			grid-template-columns: 1fr 1fr;
+		}
+
+		.progress {
+			grid-column: 1 / -1;
+			grid-row: 1;
+		}
+
+		.controls .px-btn {
+			justify-content: center;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.pilot,
+		.stage {
+			animation: none;
+		}
+
+		.achievements li {
 			opacity: 1;
-			transform: translateX(0);
-		}
-	}
-
-	@keyframes fadeInLeft {
-		from {
-			opacity: 0;
-			transform: translateX(-30px);
-		}
-		to {
-			opacity: 1;
-			transform: translateX(0);
-		}
-	}
-
-	@media (max-width: 768px) {
-		.intro-card {
-			padding: 2rem;
-			margin: 0 1rem;
-		}
-
-		.stage-nav {
-			gap: 1rem;
-		}
-
-		.stage-dot {
-			width: 3rem;
-			height: 3rem;
-		}
-
-		.stage-content {
-			padding: 2rem;
-		}
-
-		.stage-title-section {
-			flex-direction: column;
-			text-align: center;
-			gap: 1rem;
-		}
-
-		.journey-controls {
-			flex-direction: column;
-			gap: 1rem;
-		}
-
-		.download-card {
-			padding: 2rem;
-		}
-
-		.download-buttons {
-			flex-direction: column;
-			align-items: center;
-		}
-
-		.resume-stats {
-			gap: 2rem;
-		}
-
-		.info-grid {
-			grid-template-columns: 1fr;
+			animation: none;
 		}
 	}
 </style>

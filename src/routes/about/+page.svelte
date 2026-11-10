@@ -2,16 +2,27 @@
 	import contactData from '$lib/contact-data.json';
 	import { educationJourney, skillGroups } from '$lib/profile';
 	import PixelSprite from '$lib/components/space/PixelSprite.svelte';
-	import { rocket } from '$lib/components/space/sprites';
+	import { rocket, star } from '$lib/components/space/sprites';
+	import PageHeader from '$lib/components/ui/PageHeader.svelte';
+	import Screen from '$lib/components/ui/Screen.svelte';
+	import SectionNav from '$lib/components/ui/SectionNav.svelte';
 
 	const info = contactData.personalInfo;
 
 	const facts = [
-		{ icon: '✍️', title: 'Published writer', text: 'My fiction on AO3 has passed 100,000 hits and kudos.' },
-		{ icon: '🎤', title: 'Debater', text: 'Three honorable mentions in school debate.' },
-		{ icon: '🏆', title: 'GDSC Tech Idea', text: 'Top 10 finalist, finished in the top 5.' },
-		{ icon: '🔀', title: 'Changed course', text: 'Started on a pre-medical track before switching to engineering.' },
-		{ icon: '🐝', title: 'Spelling Bee', text: 'Competed back in my O Level days.' }
+		{ title: 'Published writer', text: 'My fiction on AO3 has passed 100,000 hits and kudos.' },
+		{ title: 'Debater', text: 'Three honorable mentions in school debate.' },
+		{ title: 'GDSC Tech Idea', text: 'Top 10 finalist, finished in the top 5.' },
+		{ title: 'Changed course', text: 'Started on a pre-medical track before switching to engineering.' },
+		{ title: 'Spelling Bee', text: 'Competed back in my O Level days.' }
+	];
+
+	const sections = [
+		{ id: 'intro', label: 'Intro' },
+		{ id: 'inventory', label: 'Inventory' },
+		{ id: 'journey', label: 'Journey' },
+		{ id: 'achievements', label: 'Achievements' },
+		{ id: 'talk', label: "Let's talk" }
 	];
 </script>
 
@@ -19,14 +30,17 @@
 	<title>About | Shanzay Asad</title>
 </svelte:head>
 
-<div class="about-page">
-	<section class="hero">
+<div class="px-shell">
+	<SectionNav destination="About" {sections} />
+
+<div class="px-page">
+	<PageHeader destination="About" title="About me">
+		<p class="px-label role">{info.profession} · {info.company}</p>
+	</PageHeader>
+
+	<section class="hero" id="intro">
 		<div class="hero-text">
-			<h1>About Me</h1>
-			<p class="role">{info.profession} · {info.company}</p>
-			<p>
-				I lead QA delivery at {info.company}, where we're building Voice AI solutions meant to scale.
-			</p>
+			<p>I lead QA delivery at {info.company}, where we're building Voice AI solutions meant to scale.</p>
 			<p>
 				I studied computer science at FAST-NUCES and have worked across operations, engineering and
 				product: automating workflows and hiring at Foretheta, and advocating for accessible design at AIO.
@@ -35,50 +49,59 @@
 			</p>
 			<p>Outside of work I write. My fiction on AO3 has passed 100,000 hits.</p>
 		</div>
-		<div class="avatar" aria-hidden="true">
-			<PixelSprite {...rocket} pixel={8} />
-		</div>
+
+		<Screen glow class="player">
+			<div class="player-card">
+				<span class="px-label">Player 1</span>
+				<span class="mascot"><PixelSprite {...rocket} pixel={6} /></span>
+				<span class="player-name">{info.name.split(' ')[0]}</span>
+				<span class="px-label stat">Class · QA</span>
+				<span class="px-label stat">Base · {info.location.split(',')[0]}</span>
+			</div>
+		</Screen>
 	</section>
 
-	<section>
-		<h2>Skills</h2>
+	<section id="inventory">
+		<h2 class="px-section-title">Inventory</h2>
 		<div class="skills">
 			{#each skillGroups as group}
-				<div class="skill-group">
-					<h3>{group.category}</h3>
-					<ul>
+				<Screen power={false}>
+					<span class="px-label group-title">{group.category}</span>
+					<ul class="chips">
 						{#each group.skills as skill}
-							<li>{skill}</li>
+							<li class="px-chip">{skill}</li>
 						{/each}
 					</ul>
-				</div>
+				</Screen>
 			{/each}
 		</div>
 	</section>
 
-	<section>
-		<h2>Journey</h2>
+	<section id="journey">
+		<h2 class="px-section-title">Journey</h2>
 		<ol class="timeline">
-			{#each [...educationJourney].reverse() as stage}
+			{#each [...educationJourney].reverse() as stage, i}
 				<li>
-					<span class="period">{stage.period}</span>
-					<div class="stage">
-						<h3>{stage.icon} {stage.title}</h3>
+					<span class="node" class:now={i === 0} aria-hidden="true"></span>
+					<div class="stage px-select">
+						<span class="px-label">{stage.period}</span>
+						<h3>{stage.title}</h3>
 						<p class="institution">{stage.institution}</p>
 						<p>{stage.achievements[0]}</p>
 					</div>
 				</li>
 			{/each}
 		</ol>
-		<a class="more" href="/resume">See the full journey →</a>
+		<a class="px-btn more" href="/resume"><b>A</b> Full journey</a>
 	</section>
 
-	<section>
-		<h2>Beyond work</h2>
+	<section id="achievements">
+		<h2 class="px-section-title">Achievements unlocked</h2>
 		<div class="facts">
 			{#each facts as fact}
-				<div class="fact">
-					<span class="fact-icon">{fact.icon}</span>
+				<div class="fact px-select">
+					<PixelSprite {...star} pixel={3} />
+					<span class="px-label unlocked">Unlocked</span>
 					<h3>{fact.title}</h3>
 					<p>{fact.text}</p>
 				</div>
@@ -86,34 +109,30 @@
 		</div>
 	</section>
 
-	<section class="cta">
-		<h2>Let's talk</h2>
-		<p>Happy to chat about QA, Voice AI, roles or side projects.</p>
-		<div class="cta-buttons">
-			<a href="/contact" class="btn">Get in touch</a>
-			<a href="/resume" class="btn btn-outline">View resume</a>
+	<section id="talk">
+	<Screen glow class="cta-screen">
+		<div class="cta">
+			<h2>Let's talk</h2>
+			<p>Happy to chat about QA, Voice AI, roles or side projects.</p>
+			<div class="actions">
+				<a href="/contact" class="px-btn primary"><b>A</b> Get in touch</a>
+				<a href="/resume" class="px-btn"><b>B</b> View resume</a>
+			</div>
 		</div>
+	</Screen>
 	</section>
+</div>
 </div>
 
 <style>
-	.about-page {
-		display: flex;
-		flex-direction: column;
-		gap: 4.5rem;
-		max-width: 1040px;
-		margin: 0 auto;
-		padding: 2.5rem 2rem 3rem;
-	}
-
-	section h2 {
-		margin-bottom: 1.5rem;
+	.role {
+		font-size: 0.9rem;
 	}
 
 	.hero {
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) auto;
-		align-items: center;
+		grid-template-columns: minmax(0, 1fr) 260px;
+		align-items: start;
 		gap: 3rem;
 	}
 
@@ -123,92 +142,105 @@
 		line-height: 1.75;
 	}
 
-	.hero-text .role {
-		margin: -0.25rem 0 1.5rem;
-		font-family: var(--pixel);
-		font-size: 0.9rem;
-		letter-spacing: 0.06em;
-		text-transform: uppercase;
-		color: var(--accent-cyan);
+	.player-card {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.35rem;
+		text-align: center;
 	}
 
-	.avatar {
-		display: grid;
-		place-items: center;
-		width: 220px;
-		height: 220px;
-		border-radius: 50%;
-		background: radial-gradient(circle at 35% 30%, #3423a8, #120c3a 70%);
-		box-shadow: 0 0 0 8px rgba(114, 98, 255, 0.15), 0 0 60px rgba(114, 98, 255, 0.35);
-		animation: float 3s ease-in-out infinite;
+	.mascot {
+		margin: 0.75rem 0 0.25rem;
+		animation: px-bob 2.4s ease-in-out infinite;
+	}
+
+	.player-name {
+		font-family: var(--pixel-display);
+		font-size: 2rem;
+		font-weight: 700;
+		line-height: 1.1;
+		color: #fff;
+		text-shadow: 0 0.06em 0 #3423a8;
+	}
+
+	.stat {
+		color: #d4d0e8;
 	}
 
 	.skills {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-		gap: 1rem;
+		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+		gap: 1.25rem;
 	}
 
-	.skill-group,
-	.fact,
-	.stage {
-		padding: 1.25rem 1.4rem;
-		background: rgba(16, 16, 22, 0.88);
-		border: 1px solid var(--border-color);
-		border-radius: 12px;
-		backdrop-filter: blur(6px);
-	}
-
-	.skill-group h3 {
+	.group-title {
 		margin-bottom: 0.9rem;
-		font-family: var(--pixel);
-		font-size: 0.8rem;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
 	}
 
-	.skill-group ul {
+	.chips {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.5rem;
 		list-style: none;
 	}
 
-	.skill-group li {
-		padding: 0.3rem 0.75rem;
-		border: 1px solid #2f2a55;
-		border-radius: 999px;
-		background: #17142b;
-		font-size: 0.88rem;
-		color: var(--text-primary);
-	}
-
 	.timeline {
+		position: relative;
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
+		gap: 1.5rem;
 		list-style: none;
-		border-left: 2px dashed #3423a8;
-		padding-left: 1.5rem;
+		padding-left: 2.25rem;
+	}
+
+	.timeline::before {
+		content: '';
+		position: absolute;
+		top: 0.5rem;
+		bottom: 0.5rem;
+		left: 7px;
+		border-left: 2px dashed #4b3bd1;
 	}
 
 	.timeline li {
-		display: grid;
-		grid-template-columns: 120px minmax(0, 1fr);
-		gap: 1.25rem;
-		align-items: start;
+		position: relative;
 	}
 
-	.period {
-		padding-top: 1.3rem;
-		font-family: var(--pixel);
-		font-size: 0.8rem;
-		color: var(--accent-cyan);
+	/* Square pixel node on the line */
+	.node {
+		position: absolute;
+		top: 1.35rem;
+		left: calc(-2.25rem + 1px);
+		width: 14px;
+		height: 14px;
+		background: #3423a8;
+		box-shadow: 0 0 0 3px #050508;
+	}
+
+	.node.now {
+		background: var(--violet);
+		box-shadow: 0 0 0 3px #050508, 0 0 16px rgba(114, 98, 255, 0.8);
+	}
+
+	.stage,
+	.fact {
+		padding: 1.25rem 1.4rem;
+		background: rgba(0, 0, 0, 0.75);
+		border: 2px solid #34344a;
+		border-radius: 6px;
+		transition: border-color 0.15s ease;
+	}
+
+	.stage:hover,
+	.fact:hover {
+		border-color: #5a4ae0;
 	}
 
 	.stage h3 {
-		margin-bottom: 0.2rem;
-		font-size: 1.1rem;
+		margin: 0.4rem 0 0.2rem;
+		font-family: var(--pixel-display);
+		font-size: 1.35rem;
 		color: #fff;
 	}
 
@@ -223,23 +255,23 @@
 	}
 
 	.more {
-		display: inline-block;
-		margin-top: 1.25rem;
-		font-weight: 500;
+		margin-top: 1.75rem;
 	}
 
 	.facts {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-		gap: 1rem;
+		grid-template-columns: repeat(5, 1fr);
+		gap: 1.25rem;
 	}
 
-	.fact-icon {
-		font-size: 1.6rem;
+	.unlocked {
+		margin-top: 0.75rem;
+		font-size: 0.65rem;
+		color: #ffd25e;
 	}
 
 	.fact h3 {
-		margin: 0.6rem 0 0.3rem;
+		margin: 0.3rem 0 0.3rem;
 		font-size: 1rem;
 		color: #fff;
 	}
@@ -250,18 +282,16 @@
 	}
 
 	.cta {
-		padding: 2.5rem;
+		padding: 1rem 0.5rem;
 		text-align: center;
-		background: rgba(16, 16, 22, 0.88);
-		border: 1px solid var(--border-color);
-		border-radius: 16px;
 	}
 
 	.cta h2 {
-		margin-bottom: 0.75rem;
+		margin-bottom: 0.5rem;
+		text-shadow: 0 0.06em 0 #3423a8;
 	}
 
-	.cta-buttons {
+	.actions {
 		display: flex;
 		justify-content: center;
 		flex-wrap: wrap;
@@ -269,49 +299,21 @@
 		margin-top: 1.25rem;
 	}
 
-	@keyframes float {
-		0%, 100% { transform: translateY(0); }
-		50% { transform: translateY(-10px); }
+	@media (max-width: 960px) {
+		.facts {
+			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+		}
 	}
 
 	@media (max-width: 760px) {
-		.about-page {
-			gap: 3.5rem;
-			padding: 1.5rem 1rem 2rem;
-		}
-
 		.hero {
 			grid-template-columns: 1fr;
 			gap: 2rem;
 		}
-
-		.avatar {
-			order: -1;
-			width: 150px;
-			height: 150px;
-		}
-
-		.avatar :global(svg) {
-			width: 70px;
-			height: auto;
-		}
-
-		.timeline li {
-			grid-template-columns: 1fr;
-			gap: 0.4rem;
-		}
-
-		.period {
-			padding-top: 0;
-		}
-
-		.cta {
-			padding: 1.75rem 1.25rem;
-		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.avatar {
+		.mascot {
 			animation: none;
 		}
 	}
